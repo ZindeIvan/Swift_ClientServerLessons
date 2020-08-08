@@ -105,13 +105,13 @@
          contextName = "IconShadowView.configureLayer():FriendsIconView.swift">
          <PersistentStrings>
             <PersistentString
+               value = "UIBezierPath(ovalIn: CGRect(x: frame.minX + 2, y: frame.minY + 2, width: frame.maxX - 3, height: frame.maxY - 3))">
+            </PersistentString>
+            <PersistentString
                value = "frame.maxX">
             </PersistentString>
             <PersistentString
                value = "frame.minX">
-            </PersistentString>
-            <PersistentString
-               value = "UIBezierPath(ovalIn: CGRect(x: frame.minX + 2, y: frame.minY + 2, width: frame.maxX - 3, height: frame.maxY - 3))">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -119,13 +119,13 @@
          contextName = "FriendsViewController.tableView(_:cellForRowAt:):FriendsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "friendsListSearchData">
+               value = "indexPath.section">
             </PersistentString>
             <PersistentString
                value = "indexPath.row">
             </PersistentString>
             <PersistentString
-               value = "indexPath.section">
+               value = "friendsListSearchData">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -149,6 +149,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendPhotoCount! - 1">
+            </PersistentString>
+            <PersistentString
+               value = "friendPhotoID!">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
          <PersistentStrings>
             <PersistentString
@@ -156,17 +167,6 @@
             </PersistentString>
             <PersistentString
                value = "UIImage(named: imagePath)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsScrollerControlView.setupView():FriendsScrollerControlView.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "buttons">
-            </PersistentString>
-            <PersistentString
-               value = "lettersArray">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -188,13 +188,24 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
+         contextName = "FriendsScrollerControlView.setupView():FriendsScrollerControlView.swift">
          <PersistentStrings>
             <PersistentString
-               value = "friendPhotoID!">
+               value = "buttons">
             </PersistentString>
             <PersistentString
-               value = "friendPhotoCount! - 1">
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.viewDidLoad():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "Session.instance.token">
+            </PersistentString>
+            <PersistentString
+               value = "Session.instance.userID">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

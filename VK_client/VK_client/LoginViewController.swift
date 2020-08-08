@@ -102,6 +102,8 @@ class LoginController: UIViewController {
         self.loginButton.isHidden = true
         //Проверим данные входа
         if checkLoginInfo() {
+            //Запомним данные сессии
+            setSessionInfo()
             //Запустим анимацию входа
             performLoginAnimation(repeatCounter: 1, maxRepeatCount: 1)
 
@@ -191,5 +193,24 @@ extension LoginController {
                 }
             }
         }
+    }
+}
+
+//Расширение для получения и записи данных сессии
+extension LoginController {
+    
+    func setSessionInfo (){
+        let session = Session.instance
+        session.userID = getUserID()
+        session.token = getUserToken(length: 10)
+    }
+    
+    func getUserID () -> Int{
+        return Int.random(in: 1..<100_000_000)
+    }
+    
+    func getUserToken (length : Int) -> String{
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0..<length).map{ _ in letters.randomElement()! })
     }
 }
