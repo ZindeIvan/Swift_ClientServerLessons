@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "PhotoViewController.onPan(_:):PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "velocity.x &lt; 0">
+            </PersistentString>
+            <PersistentString
+               value = "friendID! + &quot;_photo\(newPhotoID)&quot;">
+            </PersistentString>
+            <PersistentString
+               value = "newPhotoImageView.frame">
+            </PersistentString>
+            <PersistentString
+               value = "UIImage(named: friendID! + &quot;_photo\(newPhotoID)&quot;)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.viewDidLoad():PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "image.cgImage?.width">
+            </PersistentString>
+            <PersistentString
+               value = "image.cgImage?.height">
+            </PersistentString>
+            <PersistentString
+               value = "image">
+            </PersistentString>
+            <PersistentString
+               value = "friendID">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.currentSign.didset:PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "newPhotoImageView.frame">
+            </PersistentString>
+            <PersistentString
+               value = "currentSign">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.prepare(for:sender:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "test ">
+            </PersistentString>
+            <PersistentString
+               value = "friendsTableView.indexPath(for: sender as! UITableViewCell)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.scrollFriends(letter:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "sections">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PushAnimator.animateTransition(using:):Animator.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "destination.view.frame">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "LoginController.shouldPerformSegue(withIdentifier:sender:):LoginViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "loginSegueName">
+            </PersistentString>
+            <PersistentString
+               value = "identifier == loginSegueName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsPhotoCollectionViewController.prepare(for:sender:):FriendsPhotoCollectionViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NewsCell.likeCount.didset:NewsCell.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "likeCount">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "IconShadowView.configureLayer():FriendsIconView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "frame.maxX">
+            </PersistentString>
+            <PersistentString
+               value = "frame.minX">
+            </PersistentString>
+            <PersistentString
+               value = "UIBezierPath(ovalIn: CGRect(x: frame.minX + 2, y: frame.minY + 2, width: frame.maxX - 3, height: frame.maxY - 3))">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.tableView(_:cellForRowAt:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendsListSearchData">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.section">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.layoutSubviews():FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "bounds">
+            </PersistentString>
+            <PersistentString
+               value = "stackView.frame">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsTableViewController.tableView(_:willSelectRowAt:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "selectedRowIndex">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendID">
+            </PersistentString>
+            <PersistentString
+               value = "UIImage(named: imagePath)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.setupView():FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "buttons">
+            </PersistentString>
+            <PersistentString
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in FriendsTableCell.iconImageTapped(tapGestureRecognizer:):FriendsTableCell.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.iconImageWidthConstraint.constant">
+            </PersistentString>
+            <PersistentString
+               value = "self.iconImageHeightConstraint.constant">
+            </PersistentString>
+            <PersistentString
+               value = "self.iconShadowHeightConstraint.constant">
+            </PersistentString>
+            <PersistentString
+               value = "self.iconImageView.bounds">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendPhotoID!">
+            </PersistentString>
+            <PersistentString
+               value = "friendPhotoCount! - 1">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsTableViewController.tableView(_:didSelectRowAt:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.tableView(_:cellForRowAt:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsListSearchData">
+            </PersistentString>
+            <PersistentString
+               value = "groupsList">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NewsCell.likePressed.didset:NewsCell.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "likeCount">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "LoginController.addLoginAnimationViews():LoginViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "loginAnimationView.frame">
+            </PersistentString>
+            <PersistentString
+               value = "firstLoginCircle.frame">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.setupScrollerView():FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "buttons">
+            </PersistentString>
+            <PersistentString
+               value = "lettersArray ">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "LikeControlView.setupView():LikeControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "String(likeCount)">
+            </PersistentString>
+            <PersistentString
+               value = "likeCountLabel">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in FriendsViewController.scrollFriends(letter:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "user.userID.first">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsTableViewController.prepare(for:sender:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "FriendsList[selectedRowIndex].userID">
+            </PersistentString>
+            <PersistentString
+               value = "selectedRowIndex">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NewsCell.likeButtonPressed(_:):NewsCell.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "likeCount">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
