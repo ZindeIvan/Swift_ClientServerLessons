@@ -25,6 +25,7 @@ class GroupsTableViewController : UITableViewController {
         //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
         groupsListSearchData = groupsList
         
+        loadGroupsFromNetwork()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,3 +121,10 @@ extension GroupsTableViewController : UISearchBarDelegate {
     }
 }
 
+extension GroupsTableViewController {
+    
+    func loadGroupsFromNetwork(){
+        let networkService = NetworkService()
+        networkService.loadGroups(token: Session.instance.token)
+    }
+}
