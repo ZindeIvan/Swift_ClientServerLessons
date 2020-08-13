@@ -13,8 +13,13 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     //Свойство идентификатора друга пользователя
     var friendID : String?
     
+    //Свойство содержащее ссылку на класс работы с сетевыми запросами
+    let networkService = NetworkService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Вызовем загрузку фото из сети
+        loadPhotosFromNetwork()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -48,4 +53,12 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
         }
     }
     
+}
+
+//Расширение для работы с сетью
+extension FriendsPhotoCollectionViewController {
+    //Метод загрузки фото из сети
+    func loadPhotosFromNetwork(){
+        networkService.loadPhotos(token: Session.instance.token)
+    }
 }

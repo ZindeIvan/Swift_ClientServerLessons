@@ -32,6 +32,9 @@ class GroupsSearchTableViewController : UITableViewController {
     //Свойство содержащее массив групп отобранных при помощи поиска
     private var groupsListSearchData : [Group] = []
     
+    //Свойство содержащее ссылку на класс работы с сетевыми запросами
+    let networkService = NetworkService()
+    
     //Метод возвращает Группу по индексу
     func getGroupByIndex (index : Int) -> Group? {
         guard index >= 0 && index < groupsListSearchData.count else {return nil}
@@ -44,6 +47,8 @@ class GroupsSearchTableViewController : UITableViewController {
         groupsSearchBar.delegate = self
         //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
         groupsListSearchData = groupsList
+        //Вызовем метод поиска групп в сети
+        searchGroupsInNetwork()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -85,5 +90,13 @@ extension GroupsSearchTableViewController : UISearchBarDelegate {
         }
         //Перезагрузим данные таблицы
         tableView.reloadData()
+    }
+}
+
+//Расширение для работы с сетью
+extension GroupsSearchTableViewController {
+    //Метод поиска групп в сети
+    func searchGroupsInNetwork(){
+        networkService.groupsSearch(token: Session.instance.token)
     }
 }

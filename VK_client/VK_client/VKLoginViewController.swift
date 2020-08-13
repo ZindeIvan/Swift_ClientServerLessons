@@ -9,10 +9,11 @@
 import UIKit
 import WebKit
 
+//Класс для отображения экрана входа в веб формате
 class VKLoginViewController : UIViewController {
-   
+    //Название перехода для входа
     let loginSegueName : String = "LoginSegueWebView"
-    
+    //Веб форма
     @IBOutlet var webView: WKWebView! {
         didSet{
             webView.navigationDelegate = self
@@ -21,11 +22,11 @@ class VKLoginViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //Вызовем метод закгрузки страницы
         loadLoginPage()
         
     }
-    
+    //Метод загрузки страницы входа
     func loadLoginPage(){
         
         var components = URLComponents()
@@ -55,8 +56,6 @@ extension VKLoginViewController : WKNavigationDelegate {
         
         let params = getURLParams(URLfragment: fragment)
         
-//        print(params)
-        
         guard let token = params["access_token"],
             let userIDString = params["user_id"],
             let userIDInt = Int(userIDString) else {
@@ -66,11 +65,13 @@ extension VKLoginViewController : WKNavigationDelegate {
         
         Session.instance.token = token
         Session.instance.userID = userIDInt
+        //Если вход был выполнем вызовем переход
         performSegue(withIdentifier: loginSegueName, sender: self)
         
         decisionHandler(.cancel)
     }
     
+    //Метод получения параметров URL в виде словаря
     func getURLParams(URLfragment : String?) -> [String:String]{
        return URLfragment!
             .components(separatedBy: "&")

@@ -17,6 +17,8 @@ class GroupsTableViewController : UITableViewController {
     private var groupsList : [Group] = []
     //Свойство содержащее массив групп отобранных при помощи поиска
     private var groupsListSearchData : [Group] = []
+    //Свойство содержащее ссылку на класс работы с сетевыми запросами
+    let networkService = NetworkService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +26,7 @@ class GroupsTableViewController : UITableViewController {
         groupsSearchBar.delegate = self
         //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
         groupsListSearchData = groupsList
-        
+        //Вызовем метод загрузки списка групп из сети
         loadGroupsFromNetwork()
     }
     
@@ -121,10 +123,10 @@ extension GroupsTableViewController : UISearchBarDelegate {
     }
 }
 
+//Расширение для работы с сетью
 extension GroupsTableViewController {
-    
+    //Метод загрузки списка групп из сети
     func loadGroupsFromNetwork(){
-        let networkService = NetworkService()
         networkService.loadGroups(token: Session.instance.token)
     }
 }
