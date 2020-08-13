@@ -48,6 +48,9 @@ class FriendsViewController : UIViewController{
     //Текущий выбранный индекс таблицы
     var selectedIndexPath : IndexPath?
     
+    //Свойство содержащее ссылку на класс работы с сетевыми запросами
+    let networkService = NetworkService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         friendsTableView.dataSource = self
@@ -61,6 +64,8 @@ class FriendsViewController : UIViewController{
         setupFriendsScroller()
         //Зарегистрируем Заголовок секций
         friendsTableView.register(UINib(nibName: "FriendsTableSectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "sectionHeader")
+        //Вызовем загрузку списка друзей из сети
+        loadFriendsFromNetwork()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -224,5 +229,13 @@ extension FriendsViewController : UISearchBarDelegate{
         setupSections()
         //Перезагрузим данные таблицы
         friendsTableView.reloadData()
+    }
+}
+
+//Расширение для работы с сетью
+extension FriendsViewController {
+    //Метод загрузки списка друзей из сети
+    func loadFriendsFromNetwork(){
+        networkService.loadFriends(token: Session.instance.token)
     }
 }
