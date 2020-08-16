@@ -127,6 +127,25 @@ extension GroupsTableViewController : UISearchBarDelegate {
 extension GroupsTableViewController {
     //Метод загрузки списка групп из сети
     func loadGroupsFromNetwork(){
-        networkService.loadGroups(token: Session.instance.token)
+        networkService.loadGroups(token: Session.instance.token){ [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(groups):
+                self.setGroupsFromGroupsItems(groups: groups)
+                self.groupsListSearchData = self.groupsList
+                self.tableView.reloadData()
+            case let .failure(error):
+                print(error)
+            }
+        }
+    }
+    
+    func setGroupsFromGroupsItems(groups: [GroupItem]){
+        groupsList = []
+        for group in groups {
+            let newGroup = Group(groupName: group.name, groupID: String(group.id))
+            groupsList.append(newGroup)
+        }
+        groupsList = groupsList.sorted()
     }
 }

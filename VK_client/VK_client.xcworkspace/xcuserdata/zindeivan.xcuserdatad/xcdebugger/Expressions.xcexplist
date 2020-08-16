@@ -3,12 +3,26 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parametrs:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.setLetters(letters:):FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "VKLoginViewController.webView(_:decidePolicyFor:decisionHandler:):VKLoginViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "Session.instance.token">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NetworkService.loadFriends(token:completion:):NetworkService.swift">
       </ContextState>
       <ContextState
          contextName = "NetworkService.loadGroups(token:):NetworkService.swift">
@@ -23,6 +37,22 @@
          <PersistentStrings>
             <PersistentString
                value = "json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "sectionsTitles">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.lettreSelected(_:):FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

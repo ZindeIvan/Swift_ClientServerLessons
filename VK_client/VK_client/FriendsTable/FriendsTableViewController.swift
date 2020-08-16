@@ -56,6 +56,10 @@ class FriendsViewController : UIViewController{
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         friendsSearchBar.delegate = self
+        
+        //Вызовем загрузку списка друзей из сети
+        loadFriendsFromNetwork()
+        
         //В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
         friendsListSearchData = friendsList
         //Настроим секции
@@ -64,8 +68,7 @@ class FriendsViewController : UIViewController{
         setupFriendsScroller()
         //Зарегистрируем Заголовок секций
         friendsTableView.register(UINib(nibName: "FriendsTableSectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "sectionHeader")
-        //Вызовем загрузку списка друзей из сети
-        loadFriendsFromNetwork()
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -168,7 +171,7 @@ extension FriendsViewController: UITableViewDataSource {
         //Зададим надпись ячейки
         cell.friendNameLabel.text = friendsListSearchData[index!].userName
         //Установим иконку ячейки
-        cell.iconImageView.image = UIImage(named: friendsListSearchData[index!].userID + "_icon")
+//        cell.iconImageView.image = UIImage(named: friendsListSearchData[index!].userID + "_icon")
         //Установим настройки тени иконки аватарки друга
         cell.iconShadowView.configureLayer()
         //Установим настройки скругления иконки аватарки друга
@@ -236,6 +239,30 @@ extension FriendsViewController : UISearchBarDelegate{
 extension FriendsViewController {
     //Метод загрузки списка друзей из сети
     func loadFriendsFromNetwork(){
-        networkService.loadFriends(token: Session.instance.token)
+        
+        networkService.loadFriends(token: Session.instance.token){ [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(users):
+                self.setUserFromUserItems(users: users)
+                self.friendsListSearchData = self.friendsList
+                //Настроим секции
+                self.setupSections()
+                //Настроим элемент прокрутки
+                self.setupFriendsScroller()
+                self.friendsTableView.reloadData()
+            case let .failure(error):
+                print(error)
+            }
+        }
+    }
+    
+    func setUserFromUserItems(users : [UserItem]){
+        friendsList = []
+        for user in users {
+            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id))
+            friendsList.append(newUser)
+        }
+        friendsList = friendsList.sorted()
     }
 }
