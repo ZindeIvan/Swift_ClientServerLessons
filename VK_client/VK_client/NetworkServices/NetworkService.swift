@@ -9,13 +9,6 @@
 import Foundation
 import Alamofire
 
-enum Methods : String{
-    case groups = "groups.get"
-    case frinds = "friends.get"
-    case photos = "photos.get"
-    case groupsSearch = "groups.search"
-}
-
 //Класс для работы с сетевыми запросами
 class NetworkService {
     
@@ -29,6 +22,19 @@ class NetworkService {
         let session = Alamofire.Session(configuration: configuration)
         return session
     }()
+    
+    enum Methods : String{
+        case groups = "groups.get"
+        case frinds = "friends.get"
+        case photos = "photos.get"
+        case groupsSearch = "groups.search"
+    }
+    
+    enum ALbumID : String {
+        case wall = "wall"
+        case profile = "profile"
+        case saved = "saved"
+    }
     
     //Метод формирования сетевого запроса и вывода результата в кансоль
     private func networkRequest(URL : String, method : HTTPMethod, parameters : Parameters, completion: ((Result<[Any], Error>) -> Void)? = nil){
@@ -56,7 +62,12 @@ class NetworkService {
                         print(error)
                     }
                 case .photos:
-                    print("")
+                    do {
+                        let users = try JSONDecoder().decode(PhotoQuery.self, from: data).response.items
+                        completion?(.success(users))
+                    } catch {
+                        print(error)
+                    }
                 case .none:
                     return
                 }
@@ -150,20 +161,31 @@ class NetworkService {
     }
     
     //Метод загрузки фото пользователя
-    func loadPhotos(token: String) {
+    func loadPhotos(token: String, ownerID : Int, albumID : ALbumID, photoCount : Int,completion: ((Result<[PhotoItem], Error>) -> Void)? = nil) {
         method = .photos
         let path = "/method/" + method!.rawValue
         
         let params: Parameters = [
             "access_token": token,
-            "album_id": "profile",
-            "rev" : 0,
+            "owner_id" : ownerID,
+            "album_id": albumID.rawValue,
+            "rev" : 1,
             "offset" : 0,
-            "count" : 3,
+            "count" : photoCount,
             "v": apiVersion
         ]
         
-        networkRequest(URL: baseURL + path, method: .get, parameters: params)
+        networkRequest(URL: baseURL + path, method: .get, parameters: params){ result in
+
+            switch result {
+            case let .success(photos):
+                completion?(.success(photos as! [PhotoItem]))
+            case let .failure(error):
+                print(error.localizedDescription)
+                completion?(.failure(error))
+            }
+            
+        }
         
     }
     

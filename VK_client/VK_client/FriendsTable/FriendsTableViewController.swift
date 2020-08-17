@@ -19,22 +19,22 @@ class FriendsViewController : UIViewController{
     
     //Свойство содержащее массив друзей пользователя типа структура User
     private var friendsList : [User] = [
-        User(userName: "Arthur Curry", userID: "aquaman"),
-        User(userName: "Barbara Gordon", userID: "batgirl"),
-        User(userName: "Barry Allen", userID: "flash"),
-        User(userName: "Billy Batson", userID: "shazam"),
-        User(userName: "Bruce Wayne", userID: "batman"),
-        User(userName: "Clark Kent", userID: "superman"),
-        User(userName: "Damian Wayne", userID: "robin"),
-        User(userName: "Diana Prince", userID: "wonderwoman"),
-        User(userName: "Dick Grayson", userID: "nightwing"),
-        User(userName: "Dinah Lance", userID: "blackcanary"),
-        User(userName: "John Constantine", userID: "hellblazer"),
-        User(userName: "Hal Jordan", userID: "greenlantern"),
-        User(userName: "Kendra Saunders", userID: "hawkgirl"),
-        User(userName: "Oliver Queen", userID: "greenarrow"),
-        User(userName: "Victor Stone", userID: "cyborg"),
-        User(userName: "Zatanna Zatara", userID: "zatanna")
+//        User(userName: "Arthur Curry", userID: "aquaman"),
+//        User(userName: "Barbara Gordon", userID: "batgirl"),
+//        User(userName: "Barry Allen", userID: "flash"),
+//        User(userName: "Billy Batson", userID: "shazam"),
+//        User(userName: "Bruce Wayne", userID: "batman"),
+//        User(userName: "Clark Kent", userID: "superman"),
+//        User(userName: "Damian Wayne", userID: "robin"),
+//        User(userName: "Diana Prince", userID: "wonderwoman"),
+//        User(userName: "Dick Grayson", userID: "nightwing"),
+//        User(userName: "Dinah Lance", userID: "blackcanary"),
+//        User(userName: "John Constantine", userID: "hellblazer"),
+//        User(userName: "Hal Jordan", userID: "greenlantern"),
+//        User(userName: "Kendra Saunders", userID: "hawkgirl"),
+//        User(userName: "Oliver Queen", userID: "greenarrow"),
+//        User(userName: "Victor Stone", userID: "cyborg"),
+//        User(userName: "Zatanna Zatara", userID: "zatanna")
     ]
     
     //Свойство содержащее массив друзей отобранных при помощи поиска

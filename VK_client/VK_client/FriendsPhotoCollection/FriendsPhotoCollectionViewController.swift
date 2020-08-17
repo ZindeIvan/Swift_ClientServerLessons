@@ -13,6 +13,8 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     //Свойство идентификатора друга пользователя
     var friendID : String?
     
+    var photos : [String] = []
+    
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
     
@@ -37,8 +39,6 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
         return cell
     }
     
-
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         //Проверим идентификатор перехода
@@ -59,6 +59,17 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
     //Метод загрузки фото из сети
     func loadPhotosFromNetwork(){
-        networkService.loadPhotos(token: Session.instance.token)
+        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!)!, albumID: .profile, photoCount: 3){ [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(photos):
+                for photo in photos {
+                    self.photos.append(photo.photoSizes["x"]!)
+                }
+                self.collectionView.reloadData()
+            case let .failure(error):
+                print(error)
+            }
+        }
     }
 }

@@ -56,5 +56,22 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "NetworkService.loadPhotos(token:ownerID:albumID:photoCount:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parameters:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PhotoItem.__allocating_init(from:):Photo.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photosValues[0]">
+            </PersistentString>
+            <PersistentString
+               value = "self.photoSizes">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>
