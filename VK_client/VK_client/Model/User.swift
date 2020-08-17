@@ -15,6 +15,8 @@ struct User {
     //Свойство идентификатора пользователя
     let userID : String
     
+    var userPhoto : String
+    
 }
 
 //Расширим класс для возможности указания равенства экземпляров класса
@@ -30,6 +32,8 @@ extension User : Comparable {
         lhs.userName < rhs.userName
     }
 }
+
+//Классы парсинга JSON
 
 class UserQuery : Decodable {
     let response : UserResponse

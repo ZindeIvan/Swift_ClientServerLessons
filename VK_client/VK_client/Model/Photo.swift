@@ -8,6 +8,8 @@
 
 import Foundation
 
+//Классы парсинга JSON
+
 class PhotoQuery : Decodable {
     let response : PhotoResponse
 }
@@ -47,41 +49,7 @@ class PhotoItem: Decodable {
             let photoURL = try photo.decode(String.self, forKey: .url)
             photoSizes[photoType] = photoURL
         }
-//        let photo = try photosValues.nestedContainer(keyedBy: PhotoKeys.self)
-//        let photoURL = try photo.decode(String.self, forKey: .url)
         
     }
 }
-//}
-//class PhotoSIze
-//
-//struct Response: Codable {
-//let count: Int
-//let items: [Item]
-//}
-//
-//// MARK: - Item
-//struct Item: Codable {
-//let albumID, date, id, ownerID: Int
-//let hasTags: Bool
-//let postID: Int
-//let sizes: [Size]
-//let text: String
-//
-//enum CodingKeys: String, CodingKey {
-//case albumID = "album_id"
-//case date, id
-//case ownerID = "owner_id"
-//case hasTags = "has_tags"
-//case postID = "post_id"
-//case sizes, text
-//}
-//}
-//
-//// MARK: - Size
-//struct Size: Codable {
-//let height: Int
-//let url: String
-//let type: String
-//let width: Int
-//}
+

@@ -11,9 +11,11 @@ import Alamofire
 
 //Класс для работы с сетевыми запросами
 class NetworkService {
-    
+    //Свойство основной ссылки на API
     private let baseURL : String = "https://api.vk.com"
+    //Свойство версии API
     private let apiVersion : String = "5.122"
+    //Свойство методов доступа к данным
     private var method : Methods?
     
     static let session: Alamofire.Session = {
@@ -23,6 +25,7 @@ class NetworkService {
         return session
     }()
     
+    //Перечисление методов доступа
     enum Methods : String{
         case groups = "groups.get"
         case frinds = "friends.get"
@@ -30,7 +33,8 @@ class NetworkService {
         case groupsSearch = "groups.search"
     }
     
-    enum ALbumID : String {
+    //Перечисление типов альбомов фото пользователей
+    enum AlbumID : String {
         case wall = "wall"
         case profile = "profile"
         case saved = "saved"
@@ -46,7 +50,7 @@ class NetworkService {
             case .success(let data):
                 
                 switch self.method {
-                    
+                //Случай когда вызван метод запроса друзей
                 case .frinds:
                     do {
                         let users = try JSONDecoder().decode(UserQuery.self, from: data).response.items
@@ -54,6 +58,7 @@ class NetworkService {
                     } catch {
                         print(error)
                     }
+                //Случай когда вызван метод запроса групп
                 case .groups, .groupsSearch:
                     do {
                         let users = try JSONDecoder().decode(GroupQuery.self, from: data).response.items
@@ -61,6 +66,7 @@ class NetworkService {
                     } catch {
                         print(error)
                     }
+                //Случай когда вызван метод запроса фото
                 case .photos:
                     do {
                         let users = try JSONDecoder().decode(PhotoQuery.self, from: data).response.items
@@ -161,7 +167,7 @@ class NetworkService {
     }
     
     //Метод загрузки фото пользователя
-    func loadPhotos(token: String, ownerID : Int, albumID : ALbumID, photoCount : Int,completion: ((Result<[PhotoItem], Error>) -> Void)? = nil) {
+    func loadPhotos(token: String, ownerID : Int, albumID : AlbumID, photoCount : Int,completion: ((Result<[PhotoItem], Error>) -> Void)? = nil) {
         method = .photos
         let path = "/method/" + method!.rawValue
         

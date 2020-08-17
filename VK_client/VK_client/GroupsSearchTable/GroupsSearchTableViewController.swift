@@ -14,24 +14,8 @@ class GroupsSearchTableViewController : UITableViewController {
     @IBOutlet weak var groupsSearchBar : UISearchBar!
     
    //Свойство содержащее массив всех групп типа структура Group
-   private var groupsList : [Group] = [
-    
-//        Group(groupName: "A.R.G.U.S.", groupID: "argus"),
-//        Group(groupName: "Birds of Prey", groupID: "birdsofprey"),
-//        Group(groupName: "Daily Planet", groupID: "dailyplanet"),
-//        Group(groupName: "Doom Patrol", groupID: "doompatrol"),
-//        Group(groupName: "Green Lanterns Corps", groupID: "greenlanternscorps"),
-//        Group(groupName: "Justice League", groupID: "justiceleague"),
-//        Group(groupName: "Justice Society of America", groupID: "justicesocietyofamerica"),
-//        Group(groupName: "S.T.A.R. Labs", groupID: "starlabs"),
-//        Group(groupName: "Suicide Squad", groupID: "suicidesquad"),
-//        Group(groupName: "Teen Titans", groupID: "teentitans"),
-//        Group(groupName: "Wayne Enterprises", groupID: "wayneenterprises")
-        
-    ]
-//    //Свойство содержащее массив групп отобранных при помощи поиска
-//    private var groupsListSearchData : [Group] = []
-//
+   private var groupsList : [Group] = []
+
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
     
@@ -59,8 +43,7 @@ class GroupsSearchTableViewController : UITableViewController {
         //Зададим надпись ячейки
         cell.groupSearchNameLabel.text = groupsList[indexPath.row].groupName
         //Установим иконку ячейки
-//        cell.groupSearchIconView.image = UIImage(named: groupsList[indexPath.row].groupID + "_icon")
-        
+        cell.groupSearchIconView.sd_setImage(with: URL(string: groupsList[indexPath.row].groupPhoto), placeholderImage: UIImage(named: "error"))
         return cell
     }
 }
@@ -86,12 +69,6 @@ extension GroupsSearchTableViewController : UISearchBarDelegate {
         else{
             searchGroupsInNetwork(searchText: searchText)
         }
-        //        groupsListSearchData = searchText.isEmpty ? groupsList : groupsList.filter {
-        //            (group: Group) -> Bool in
-        //            return group.groupName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-        //        }
-        //        //Перезагрузим данные таблицы
-        //        tableView.reloadData()
     }
 }
 
@@ -111,10 +88,11 @@ extension GroupsSearchTableViewController {
         }
     }
     
+    //Метод установки списка групп
     func setGroupsFromGroupsItems(groups: [GroupItem]){
         groupsList = []
         for group in groups {
-            let newGroup = Group(groupName: group.name, groupID: String(group.id))
+            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
             groupsList.append(newGroup)
         }
         groupsList = groupsList.sorted()

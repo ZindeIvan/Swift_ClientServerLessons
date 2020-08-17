@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import  SDWebImage
 
 //Класс для отображения списка групп пользователя
 class GroupsTableViewController : UITableViewController {
@@ -51,7 +52,7 @@ class GroupsTableViewController : UITableViewController {
         //Зададим надпись ячейки
         cell.groupNameLabel.text = groupsListSearchData[indexPath.row].groupName
         //Установим иконку ячейки
-        cell.groupIconView.image = UIImage(named: groupsListSearchData[indexPath.row].groupID + "_icon")
+        cell.groupIconView.sd_setImage(with: URL(string: groupsListSearchData[indexPath.row].groupPhoto), placeholderImage: UIImage(named: "error"))
         
         return cell
     }
@@ -140,10 +141,11 @@ extension GroupsTableViewController {
         }
     }
     
+    //Метод установки списка групп поиска
     func setGroupsFromGroupsItems(groups: [GroupItem]){
         groupsList = []
         for group in groups {
-            let newGroup = Group(groupName: group.name, groupID: String(group.id))
+            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
             groupsList.append(newGroup)
         }
         groupsList = groupsList.sorted()

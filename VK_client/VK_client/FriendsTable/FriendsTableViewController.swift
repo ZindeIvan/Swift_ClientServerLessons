@@ -18,24 +18,7 @@ class FriendsViewController : UIViewController{
     @IBOutlet weak var friendsSearchBar : UISearchBar!
     
     //Свойство содержащее массив друзей пользователя типа структура User
-    private var friendsList : [User] = [
-//        User(userName: "Arthur Curry", userID: "aquaman"),
-//        User(userName: "Barbara Gordon", userID: "batgirl"),
-//        User(userName: "Barry Allen", userID: "flash"),
-//        User(userName: "Billy Batson", userID: "shazam"),
-//        User(userName: "Bruce Wayne", userID: "batman"),
-//        User(userName: "Clark Kent", userID: "superman"),
-//        User(userName: "Damian Wayne", userID: "robin"),
-//        User(userName: "Diana Prince", userID: "wonderwoman"),
-//        User(userName: "Dick Grayson", userID: "nightwing"),
-//        User(userName: "Dinah Lance", userID: "blackcanary"),
-//        User(userName: "John Constantine", userID: "hellblazer"),
-//        User(userName: "Hal Jordan", userID: "greenlantern"),
-//        User(userName: "Kendra Saunders", userID: "hawkgirl"),
-//        User(userName: "Oliver Queen", userID: "greenarrow"),
-//        User(userName: "Victor Stone", userID: "cyborg"),
-//        User(userName: "Zatanna Zatara", userID: "zatanna")
-    ]
+    private var friendsList : [User] = []
     
     //Свойство содержащее массив друзей отобранных при помощи поиска
     private var friendsListSearchData : [User] = []
@@ -68,7 +51,7 @@ class FriendsViewController : UIViewController{
         setupFriendsScroller()
         //Зарегистрируем Заголовок секций
         friendsTableView.register(UINib(nibName: "FriendsTableSectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "sectionHeader")
-
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -109,7 +92,7 @@ class FriendsViewController : UIViewController{
             if sections[firstLetter] != nil {
                 sections[firstLetter]?.append(user.userName)
             }
-            //В противном случае добавим новый элемент словаря
+                //В противном случае добавим новый элемент словаря
             else {
                 sections[firstLetter] = [user.userName]
             }
@@ -131,7 +114,7 @@ class FriendsViewController : UIViewController{
 }
 
 extension FriendsViewController: UITableViewDataSource {    
-   
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //Возвращаем количество элементов в секции
         return sections[sectionsTitles[section]]?.count ?? 0
@@ -146,7 +129,7 @@ extension FriendsViewController: UITableViewDataSource {
         //Возвращаем заголовк секции
         guard let header = friendsTableView.dequeueReusableHeaderFooterView(withIdentifier: "sectionHeader") as? FriendsTableSectionHeaderView else { fatalError() }
         header.label.text = String(sectionsTitles[section])
-       
+        
         return header
     }
     
@@ -171,7 +154,7 @@ extension FriendsViewController: UITableViewDataSource {
         //Зададим надпись ячейки
         cell.friendNameLabel.text = friendsListSearchData[index!].userName
         //Установим иконку ячейки
-//        cell.iconImageView.image = UIImage(named: friendsListSearchData[index!].userID + "_icon")
+        cell.iconImageView.sd_setImage(with: URL(string: friendsListSearchData[index!].userPhoto), placeholderImage: UIImage(named: "error"))
         //Установим настройки тени иконки аватарки друга
         cell.iconShadowView.configureLayer()
         //Установим настройки скругления иконки аватарки друга
@@ -226,7 +209,7 @@ extension FriendsViewController : UISearchBarDelegate{
         //Заполним массив друзей отобранных при помощи поиска при помощи замыкания
         friendsListSearchData = searchText.isEmpty ? friendsList : friendsList.filter {
             (user: User) -> Bool in
-                return user.userName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            return user.userName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
         }
         //Вызовем метод настройки секций
         setupSections()
@@ -251,18 +234,42 @@ extension FriendsViewController {
                 //Настроим элемент прокрутки
                 self.setupFriendsScroller()
                 self.friendsTableView.reloadData()
+                
+                self.loadFriendsAvatarImages()
             case let .failure(error):
                 print(error)
             }
         }
+        
     }
     
+    //Метод установки списка друзей
     func setUserFromUserItems(users : [UserItem]){
         friendsList = []
         for user in users {
-            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id))
+            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id), userPhoto: "")
             friendsList.append(newUser)
         }
         friendsList = friendsList.sorted()
     }
+    
+    //Метод загрузки аватарок друзей
+    func loadFriendsAvatarImages(){
+        
+        for user in friendsList{
+            networkService.loadPhotos(token: Session.instance.token, ownerID: Int(user.userID)!, albumID: .profile, photoCount: 1) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case let .success(photo):
+                    self.friendsListSearchData[self.friendsList.firstIndex(of: user)!].userPhoto
+                        = photo[0].photoSizes["s"]!
+                    self.friendsTableView.reloadData()
+                case let .failure(error):
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    
 }

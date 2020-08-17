@@ -14,6 +14,8 @@ struct Group {
     let groupName : String
     //Свойство идентификатора группы
     let groupID : String
+    
+    let groupPhoto : String
 }
 
 //Расширим класс для возможности указания равенства экземпляров класса
@@ -30,6 +32,7 @@ extension Group : Comparable {
     }
 }
 
+//Классы парсинга JSON
 
 class GroupQuery : Decodable {
     let response : GroupResponse
