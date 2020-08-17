@@ -37,6 +37,7 @@ class FriendsScrollerControlView : UIControl {
     
     //Метод заполнения массива букв
     func setLetters (letters : [Character]) {
+        lettersArray = []
         for letter in letters {
             lettersArray.append(letter)
         }
@@ -45,6 +46,7 @@ class FriendsScrollerControlView : UIControl {
     //Метод установки элементов
     func setupScrollerView() {
         
+        clearButtons()
         //Обходим массив букв и устанавливаем для каждой буквы свою кнопку
         for letter in lettersArray {
             let button = UIButton(type: .system)
@@ -83,5 +85,12 @@ class FriendsScrollerControlView : UIControl {
         super.layoutSubviews()
         //Установи границы группировочного элемента
         stackView.frame = bounds
+    }
+    
+    func clearButtons(){
+        for button in buttons {
+            button.removeFromSuperview()
+        }
+        buttons = []
     }
 }

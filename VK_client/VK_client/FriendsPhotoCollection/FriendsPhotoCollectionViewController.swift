@@ -12,6 +12,8 @@ import UIKit
 class FriendsPhotoCollectionViewController : UICollectionViewController {
     //Свойство идентификатора друга пользователя
     var friendID : String?
+    //Свойство массива ссылок на фото
+    var photos : [String] = []
     
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
@@ -24,20 +26,16 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //Вернем количество фото = 3
-        return 3
+        return photos.count
     
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendsPhotoCell", for: indexPath) as! FriendsPhotoCell
         //Установим фото друга в ячейке
-        let imagePath : String = friendID == nil ? "error" : friendID! + "_photo\(indexPath.row)"
-        let image : UIImage = (UIImage(named: imagePath) == nil ? UIImage(named: "error") : UIImage(named: imagePath))!
-        cell.friendPhotoImageView.image = image
+        cell.friendPhotoImageView.sd_setImage(with: URL(string: photos[indexPath.row]), placeholderImage: UIImage(named: "error"))
         return cell
     }
-    
-
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
@@ -48,7 +46,7 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
                 
                 guard let indexPath = collectionView.indexPathsForSelectedItems?.first else { return }
 
-                destination.setPhotoInformation(friendID: friendID, friendPhotoCount: 3, friendPhotoID: indexPath.row)
+                destination.setPhotoInformation(friendID: friendID, friendPhotoCount: photos.count, friendPhotoID: indexPath.row, photos: photos)
             }
         }
     }
@@ -59,6 +57,17 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
     //Метод загрузки фото из сети
     func loadPhotosFromNetwork(){
-        networkService.loadPhotos(token: Session.instance.token)
+        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!)!, albumID: .profile, photoCount: 3){ [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(photos):
+                for photo in photos {
+                    self.photos.append(photo.photoSizes["x"]!)
+                }
+                self.collectionView.reloadData()
+            case let .failure(error):
+                print(error)
+            }
+        }
     }
 }

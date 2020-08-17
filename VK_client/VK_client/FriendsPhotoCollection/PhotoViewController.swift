@@ -45,14 +45,18 @@ class PhotoViewController : UIViewController {
     private var friendPhotoCount : Int?
     //Идентификатор текущего фото
     private var friendPhotoID : Int?
+    //Массив ссылок на фото
+    private var photos : [String]?
     
     var interactiveAnimator: UIViewPropertyAnimator?
     
     //Метод установки данных друга
-    func setPhotoInformation(friendID : String?, friendPhotoCount : Int, friendPhotoID : Int){
+    func setPhotoInformation(friendID : String?, friendPhotoCount : Int, friendPhotoID: Int, photos : [String]){
         self.friendID = friendID
         self.friendPhotoCount = friendPhotoCount
         self.friendPhotoID = friendPhotoID
+        self.photos = photos
+        
     }
     
     override func viewDidLoad() {
@@ -82,12 +86,8 @@ class PhotoViewController : UIViewController {
     
     //Метод установки изображения по индексу в ImageView
     func setImageToView(imageID: Int, imageView : UIImageView){
-        //Установим путь к изображению
-        let imagePath : String = (friendID == nil || friendPhotoCount == nil) ? "error" : friendID! + "_photo\(imageID)"
-        //Получим изображение
-        let image : UIImage = (UIImage(named: imagePath) == nil ? UIImage(named: "error") : UIImage(named: imagePath))!
         //Установим изображение в ImageView
-        imageView.image = image
+        imageView.sd_setImage(with: URL(string: photos![friendPhotoID!]), placeholderImage: UIImage(named: "error"))
     }
     
     //Метод установки изображений

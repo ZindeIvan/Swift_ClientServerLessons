@@ -14,55 +14,36 @@ class GroupsSearchTableViewController : UITableViewController {
     @IBOutlet weak var groupsSearchBar : UISearchBar!
     
    //Свойство содержащее массив всех групп типа структура Group
-   private var groupsList : [Group] = [
-    
-        Group(groupName: "A.R.G.U.S.", groupID: "argus"),
-        Group(groupName: "Birds of Prey", groupID: "birdsofprey"),
-        Group(groupName: "Daily Planet", groupID: "dailyplanet"),
-        Group(groupName: "Doom Patrol", groupID: "doompatrol"),
-        Group(groupName: "Green Lanterns Corps", groupID: "greenlanternscorps"),
-        Group(groupName: "Justice League", groupID: "justiceleague"),
-        Group(groupName: "Justice Society of America", groupID: "justicesocietyofamerica"),
-        Group(groupName: "S.T.A.R. Labs", groupID: "starlabs"),
-        Group(groupName: "Suicide Squad", groupID: "suicidesquad"),
-        Group(groupName: "Teen Titans", groupID: "teentitans"),
-        Group(groupName: "Wayne Enterprises", groupID: "wayneenterprises")
-        
-    ]
-    //Свойство содержащее массив групп отобранных при помощи поиска
-    private var groupsListSearchData : [Group] = []
-    
+   private var groupsList : [Group] = []
+
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
     
     //Метод возвращает Группу по индексу
     func getGroupByIndex (index : Int) -> Group? {
-        guard index >= 0 && index < groupsListSearchData.count else {return nil}
-        return groupsListSearchData[index]
+        guard index >= 0 && index < groupsList.count else {return nil}
+        return groupsList[index]
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
-        //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-        groupsListSearchData = groupsList
         //Вызовем метод поиска групп в сети
-        searchGroupsInNetwork()
+        searchGroupsInNetwork(searchText: "")
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //Возвращаем количество ячеек таблицы = количеству элементов массива groupsList
-        return groupsListSearchData.count
+        return groupsList.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsSearchTableCell") as? GroupsSearchTableCell else { fatalError() }
         //Зададим надпись ячейки
-        cell.groupSearchNameLabel.text = groupsListSearchData[indexPath.row].groupName
+        cell.groupSearchNameLabel.text = groupsList[indexPath.row].groupName
         //Установим иконку ячейки
-        cell.groupSearchIconView.image = UIImage(named: groupsListSearchData[indexPath.row].groupID + "_icon")
-        
+        cell.groupSearchIconView.sd_setImage(with: URL(string: groupsList[indexPath.row].groupPhoto), placeholderImage: UIImage(named: "error"))
         return cell
     }
 }
@@ -74,29 +55,47 @@ extension GroupsSearchTableViewController : UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         //Уберем текст в строке поиска
         groupsSearchBar.text = ""
-        //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-        groupsListSearchData = groupsList
         groupsSearchBar.endEditing(true)
         //Перезагрузим данные таблицы
-        tableView.reloadData()
+        searchGroupsInNetwork(searchText: "")
     }
     
     //Метод обработки ввода текста в строку поиска
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         //Заполним массив групп отобранных при помощи поиска при помощи замыкания
-        groupsListSearchData = searchText.isEmpty ? groupsList : groupsList.filter {
-            (group: Group) -> Bool in
-            return group.groupName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        if searchText.isEmpty {
+            searchGroupsInNetwork(searchText: "")
         }
-        //Перезагрузим данные таблицы
-        tableView.reloadData()
+        else{
+            searchGroupsInNetwork(searchText: searchText)
+        }
     }
 }
 
 //Расширение для работы с сетью
 extension GroupsSearchTableViewController {
     //Метод поиска групп в сети
-    func searchGroupsInNetwork(){
-        networkService.groupsSearch(token: Session.instance.token)
+    func searchGroupsInNetwork(searchText: String){
+        networkService.groupsSearch(token: Session.instance.token, searchQuery: searchText){ [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(groups):
+                self.setGroupsFromGroupsItems(groups: groups)
+                self.tableView.reloadData()
+            case let .failure(error):
+                print(error)
+            }
+        }
+    }
+    
+    //Метод установки списка групп
+    func setGroupsFromGroupsItems(groups: [GroupItem]){
+        groupsList = []
+        for group in groups {
+            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
+            groupsList.append(newGroup)
+        }
+        groupsList = groupsList.sorted()
     }
 }
+

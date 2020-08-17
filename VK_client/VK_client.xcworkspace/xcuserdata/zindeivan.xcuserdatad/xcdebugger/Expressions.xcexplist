@@ -3,12 +3,67 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "sectionsTitles">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendPhotoID">
+            </PersistentString>
+            <PersistentString
+               value = "photos">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "VKLoginViewController.webView(_:decidePolicyFor:decisionHandler:):VKLoginViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "Session.instance.token">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photos![friendPhotoID!]">
+            </PersistentString>
+            <PersistentString
+               value = "photos">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.lettreSelected(_:):FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NetworkService.loadFriends(token:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parameters:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.setGroupsFromGroupsItems(groups:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsList">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parametrs:completion:):NetworkService.swift">
       </ContextState>
       <ContextState
          contextName = "NetworkService.loadGroups(token:):NetworkService.swift">
@@ -23,6 +78,28 @@
          <PersistentStrings>
             <PersistentString
                value = "json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.setLetters(letters:):FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NetworkService.loadPhotos(token:ownerID:albumID:photoCount:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PhotoItem.__allocating_init(from:):Photo.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photosValues[0]">
+            </PersistentString>
+            <PersistentString
+               value = "self.photoSizes">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
