@@ -7,22 +7,25 @@
 //
 
 import Foundation
+import RealmSwift
 
 //Классы парсинга JSON
 
-class PhotoQuery : Decodable {
-    let response : PhotoResponse
+class PhotoQuery : Decodable{
+    var response : PhotoResponse
 }
 
-class PhotoResponse : Decodable {
+class PhotoResponse : Decodable{
     let count: Int = 0
-    let items: [PhotoItem]
+    var items: [PhotoItem]
 }
 
-class PhotoItem: Decodable {
-    dynamic var id: Int = 0
-    dynamic var ownerID: Int = 0
-    dynamic var photoSizes : [String : String] = [:]
+class PhotoItem: Object, Decodable, Itemable{
+    @objc dynamic var id: Int = 0
+    @objc dynamic var ownerID: Int = 0
+    @objc var photoSizeX : String = ""
+    @objc var photoSizeM : String = ""
+    @objc var photoSizeS : String = ""
 
     enum CodingKeys: String, CodingKey {
     case id
@@ -47,9 +50,22 @@ class PhotoItem: Decodable {
             let photo = try photosValues.nestedContainer(keyedBy: PhotoKeys.self)
             let photoType = try photo.decode(String.self, forKey: .type)
             let photoURL = try photo.decode(String.self, forKey: .url)
-            photoSizes[photoType] = photoURL
+            switch photoType {
+            case "x":
+                photoSizeX = photoURL
+            case "s":
+                photoSizeS = photoURL
+            case "m":
+                photoSizeM = photoURL
+            default:
+                continue
+            }
         }
         
+    }
+    
+    override class func primaryKey() -> String? {
+        return "id"
     }
 }
 

@@ -34,15 +34,18 @@ class FriendsViewController : UIViewController{
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
     
+    //Свойство содержит ссылку на класс работы с Realm
+    let realmService = RealmService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         friendsSearchBar.delegate = self
-        
+        //Загрузим список друзей из Realm
+        loadUsersFromRealm()
         //Вызовем загрузку списка друзей из сети
         loadFriendsFromNetwork()
-        
         //В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
         friendsListSearchData = friendsList
         //Настроим секции
@@ -227,8 +230,8 @@ extension FriendsViewController {
             guard let self = self else { return }
             switch result {
             case let .success(users):
-                self.setUserFromUserItems(users: users)
-                self.friendsListSearchData = self.friendsList
+                self.realmService.saveInRealm(array: users)
+                self.setFriendsFromUserItems(users)
                 //Настроим секции
                 self.setupSections()
                 //Настроим элемент прокрутки
@@ -244,13 +247,14 @@ extension FriendsViewController {
     }
     
     //Метод установки списка друзей
-    func setUserFromUserItems(users : [UserItem]){
+    func setFriendsFromUserItems(_ users : [UserItem]){
         friendsList = []
         for user in users {
             let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id), userPhoto: "")
             friendsList.append(newUser)
         }
         friendsList = friendsList.sorted()
+        friendsListSearchData = friendsList
     }
     
     //Метод загрузки аватарок друзей
@@ -258,12 +262,11 @@ extension FriendsViewController {
         
         for user in friendsList{
             networkService.loadPhotos(token: Session.instance.token, ownerID: Int(user.userID)!, albumID: .profile, photoCount: 1) { [weak self] result in
-                guard let self = self else { return }
                 switch result {
                 case let .success(photo):
-                    self.friendsListSearchData[self.friendsList.firstIndex(of: user)!].userPhoto
-                        = photo[0].photoSizes["s"]!
-                    self.friendsTableView.reloadData()
+                    self?.friendsListSearchData[(self?.friendsList.firstIndex(of: user))!].userPhoto
+                        = photo[0].photoSizeS
+                    self?.friendsTableView.reloadData()
                 case let .failure(error):
                     print(error)
                 }
@@ -273,3 +276,18 @@ extension FriendsViewController {
     
     
 }
+
+//Расширение для работы с Realm
+extension FriendsViewController{
+    
+    //Метод загрузки списка друзей из Realm
+    func loadUsersFromRealm(){
+        
+        guard let usersResults = realmService.loadFromRealm(type: UserItem.self, filter: nil) else {return}
+        setFriendsFromUserItems(usersResults as! [UserItem])
+    }
+    
+}
+    
+
+

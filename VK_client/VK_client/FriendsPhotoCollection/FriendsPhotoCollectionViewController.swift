@@ -14,18 +14,25 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     var friendID : String?
     //Свойство массива ссылок на фото
     var photos : [String] = []
+    //Свойство количество фото для отображения
+    var photoCount : Int = 3
     
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
     
+    //Свойство содержит ссылку на класс работы с Realm
+    let realmService = RealmService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Загрузим список фото друга из Realm
+        loadPhotosFromRealm()
         //Вызовем загрузку фото из сети
         loadPhotosFromNetwork()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //Вернем количество фото = 3
+        //Вернем количество фото
         return photos.count
     
     }
@@ -57,17 +64,33 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
     //Метод загрузки фото из сети
     func loadPhotosFromNetwork(){
-        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!)!, albumID: .profile, photoCount: 3){ [weak self] result in
-            guard let self = self else { return }
+        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!)!, albumID: .profile, photoCount: photoCount){ [weak self] result in
             switch result {
             case let .success(photos):
-                for photo in photos {
-                    self.photos.append(photo.photoSizes["x"]!)
-                }
-                self.collectionView.reloadData()
+                self?.realmService.saveInRealm(array: photos)
+                self?.setPhotosFromPhotosItems(photos)
+                self?.collectionView.reloadData()
             case let .failure(error):
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }
+    
+    func setPhotosFromPhotosItems(_ photos: [PhotoItem]){
+        for photo in photos {
+            self.photos.append(photo.photoSizeX)
+        }
+    }
+}
+
+//Расширение для работы с Realm
+extension FriendsPhotoCollectionViewController{
+     
+    //Метод загрузки списка фото друга из Realm
+    func loadPhotosFromRealm(){
+        let searchPredicate = NSPredicate(format: "ownerID == %i", friendID!)
+        guard let groupsResults = realmService.loadFromRealm(type: PhotoItem.self, filter: searchPredicate) else {return}
+        setPhotosFromPhotosItems(groupsResults as! [PhotoItem])
+    }
+    
 }

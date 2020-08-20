@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+//import RealmSwift
 
 //Класс для работы с сетевыми запросами
 class NetworkService {
@@ -41,22 +42,23 @@ class NetworkService {
     }
     
     //Метод формирования сетевого запроса и вывода результата в кансоль
-    private func networkRequest(URL : String, method : HTTPMethod, parameters : Parameters, completion: ((Result<[Any], Error>) -> Void)? = nil){
+    private func networkRequest( URL : String, method : HTTPMethod, parameters : Parameters, completion: ((Result<[Any], Error>) -> Void)? = nil){
         
         AF.request(URL, method: method, parameters: parameters).responseData { response in
             
             switch response.result {
                 
             case .success(let data):
-                
+
                 switch self.method {
                 //Случай когда вызван метод запроса друзей
                 case .frinds:
                     do {
                         let users = try JSONDecoder().decode(UserQuery.self, from: data).response.items
+                        
                         completion?(.success(users))
                     } catch {
-                        print(error)
+                        completion?(.failure(error))
                     }
                 //Случай когда вызван метод запроса групп
                 case .groups, .groupsSearch:
@@ -64,15 +66,15 @@ class NetworkService {
                         let users = try JSONDecoder().decode(GroupQuery.self, from: data).response.items
                         completion?(.success(users))
                     } catch {
-                        print(error)
+                        completion?(.failure(error))
                     }
                 //Случай когда вызван метод запроса фото
                 case .photos:
                     do {
-                        let users = try JSONDecoder().decode(PhotoQuery.self, from: data).response.items
-                        completion?(.success(users))
+                        let photos = try JSONDecoder().decode(PhotoQuery.self, from: data).response.items
+                        completion?(.success(photos))
                     } catch {
-                        print(error)
+                        completion?(.failure(error))
                     }
                 case .none:
                     return
@@ -98,8 +100,8 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest(URL: baseURL + path, method: .get, parameters: params) { result in
-
+        networkRequest( URL: baseURL + path, method: .get, parameters: params) { result in
+            
             switch result {
             case let .success(users):
                 completion?(.success(users as! [UserItem]))
@@ -124,8 +126,8 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest(URL: baseURL + path, method: .get, parameters: params){ result in
-
+        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+            
             switch result {
             case let .success(groups):
                 completion?(.success(groups as! [GroupItem]))
@@ -135,7 +137,7 @@ class NetworkService {
             }
             
         }
-
+        
     }
     
     //Метод поиска групп
@@ -152,8 +154,9 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest(URL: baseURL + path, method: .get, parameters: params){ result in
-
+        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+            
+            
             switch result {
             case let .success(groups):
                 completion?(.success(groups as! [GroupItem]))
@@ -181,8 +184,8 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest(URL: baseURL + path, method: .get, parameters: params){ result in
-
+        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+            
             switch result {
             case let .success(photos):
                 completion?(.success(photos as! [PhotoItem]))
@@ -195,6 +198,5 @@ class NetworkService {
         
     }
     
-
 }
 

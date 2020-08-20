@@ -20,11 +20,15 @@ class GroupsTableViewController : UITableViewController {
     private var groupsListSearchData : [Group] = []
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
     let networkService = NetworkService()
+    //Свойство содержит ссылку на класс работы с Realm
+    let realmService = RealmService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
+        //Загрузим список групп из Realm
+        loadGroupsFromRealm()
         //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
         groupsListSearchData = groupsList
         //Вызовем метод загрузки списка групп из сети
@@ -129,12 +133,11 @@ extension GroupsTableViewController {
     //Метод загрузки списка групп из сети
     func loadGroupsFromNetwork(){
         networkService.loadGroups(token: Session.instance.token){ [weak self] result in
-            guard let self = self else { return }
             switch result {
             case let .success(groups):
-                self.setGroupsFromGroupsItems(groups: groups)
-                self.groupsListSearchData = self.groupsList
-                self.tableView.reloadData()
+                self?.realmService.saveInRealm(array: groups)
+                self?.setGroupsFromGroupsItems( groups)
+                self?.tableView.reloadData()
             case let .failure(error):
                 print(error)
             }
@@ -142,12 +145,25 @@ extension GroupsTableViewController {
     }
     
     //Метод установки списка групп поиска
-    func setGroupsFromGroupsItems(groups: [GroupItem]){
+    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
         groupsList = []
         for group in groups {
             let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
             groupsList.append(newGroup)
         }
         groupsList = groupsList.sorted()
+        groupsListSearchData = groupsList
     }
+}
+
+//Расширение для работы с Realm
+extension GroupsTableViewController{
+     
+    //Метод загрузки списка групп из Realm
+    func loadGroupsFromRealm(){
+        
+        guard let groupsResults = realmService.loadFromRealm(type: GroupItem.self, filter: nil) else {return}
+        setGroupsFromGroupsItems(groupsResults as! [GroupItem])
+    }
+    
 }
