@@ -14,10 +14,37 @@
          contextName = "PhotoViewController.setImages():PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "friendPhotoID">
+               value = "photos">
             </PersistentString>
             <PersistentString
-               value = "photos">
+               value = "friendPhotoID">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.loadUsersFromRealm():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "usersResults">
+            </PersistentString>
+            <PersistentString
+               value = "Array(usersResults)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "RealmService.loadFromRealm&lt;A&gt;(type:):RealmService.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "Array(realmResults)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.friendsList.didset:FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendsList">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -33,10 +60,10 @@
          contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos![friendPhotoID!]">
+               value = "photos">
             </PersistentString>
             <PersistentString
-               value = "photos">
+               value = "photos![friendPhotoID!]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -66,6 +93,9 @@
          contextName = "closure #1 in NetworkService.networkRequest(URL:method:parametrs:completion:):NetworkService.swift">
       </ContextState>
       <ContextState
+         contextName = "main:AppDelegate.swift">
+      </ContextState>
+      <ContextState
          contextName = "NetworkService.loadGroups(token:):NetworkService.swift">
          <PersistentStrings>
             <PersistentString
@@ -78,6 +108,14 @@
          <PersistentStrings>
             <PersistentString
                value = "json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.setUserFromUserItems(_:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "users">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

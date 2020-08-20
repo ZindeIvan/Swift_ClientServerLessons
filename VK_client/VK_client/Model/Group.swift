@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 //Класс Группы
 struct Group {
@@ -34,21 +35,21 @@ extension Group : Comparable {
 
 //Классы парсинга JSON
 
-class GroupQuery : Decodable {
-    let response : GroupResponse
+class GroupQuery : Decodable{
+    var response : GroupResponse
 }
 
-class GroupResponse : Decodable {
+class GroupResponse : Decodable{
     let count: Int = 0
-    let items: [GroupItem]
+    var items: [GroupItem]
 }
 
-class GroupItem: Decodable {
+class GroupItem: Object, Decodable , Itemable{
     
-    dynamic var id: Int = 0
-    dynamic var name: String = ""
-    dynamic var screenName: String = ""
-    dynamic var photo50: String = ""
+    @objc dynamic var id: Int = 0
+    @objc dynamic var name: String = ""
+    @objc dynamic var screenName: String = ""
+    @objc dynamic var photo50: String = ""
     
     enum CodingKeys: String, CodingKey {
         case id, name
@@ -67,4 +68,9 @@ class GroupItem: Decodable {
         self.photo50 = try values.decode(String.self, forKey: .photo50)
         
     }
+    
+    override class func primaryKey() -> String? {
+        return "id"
+    }
+    
 }

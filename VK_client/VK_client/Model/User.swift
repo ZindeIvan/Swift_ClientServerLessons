@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 //Класс Пользователь
 struct User {
@@ -35,20 +36,22 @@ extension User : Comparable {
 
 //Классы парсинга JSON
 
-class UserQuery : Decodable {
-    let response : UserResponse
+class UserQuery : Decodable{
+    
+    var response: UserResponse
+    
 }
 
-class UserResponse : Decodable {
+class UserResponse : Decodable{
     let count: Int = 0
-    let items: [UserItem]
+    var items: [UserItem]
 }
 
-class UserItem: Decodable {
-    dynamic var id: Int = 0
-    dynamic var firstName: String = ""
-    dynamic var lastName: String = ""
-    dynamic var online: Int = 0
+class UserItem: Object, Decodable, Itemable {
+    @objc dynamic var id: Int = 0
+    @objc dynamic var firstName: String = ""
+    @objc dynamic var lastName: String = ""
+    @objc dynamic var online: Int = 0
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -67,5 +70,8 @@ class UserItem: Decodable {
         self.online = try values.decode(Int.self, forKey: .online)
         
     }
+    
+    override class func primaryKey() -> String? {
+        return "id"
+    }
 }
-

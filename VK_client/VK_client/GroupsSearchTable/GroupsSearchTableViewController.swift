@@ -77,11 +77,10 @@ extension GroupsSearchTableViewController {
     //Метод поиска групп в сети
     func searchGroupsInNetwork(searchText: String){
         networkService.groupsSearch(token: Session.instance.token, searchQuery: searchText){ [weak self] result in
-            guard let self = self else { return }
             switch result {
             case let .success(groups):
-                self.setGroupsFromGroupsItems(groups: groups)
-                self.tableView.reloadData()
+                self?.setGroupsFromGroupsItems(groups)
+                self?.tableView.reloadData()
             case let .failure(error):
                 print(error)
             }
@@ -89,7 +88,7 @@ extension GroupsSearchTableViewController {
     }
     
     //Метод установки списка групп
-    func setGroupsFromGroupsItems(groups: [GroupItem]){
+    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
         groupsList = []
         for group in groups {
             let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
@@ -98,4 +97,3 @@ extension GroupsSearchTableViewController {
         groupsList = groupsList.sorted()
     }
 }
-
