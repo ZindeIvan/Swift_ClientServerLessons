@@ -35,6 +35,7 @@ class RealmService {
             print(error.localizedDescription)
             return nil
         }
+        
     }
     
     //Метод записи объектов в Realm

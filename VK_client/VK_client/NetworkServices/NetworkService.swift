@@ -16,8 +16,6 @@ class NetworkService {
     private let baseURL : String = "https://api.vk.com"
     //Свойство версии API
     private let apiVersion : String = "5.122"
-    //Свойство методов доступа к данным
-    private var method : Methods?
     
     static let session: Alamofire.Session = {
         let configuration = URLSessionConfiguration.default
@@ -25,14 +23,6 @@ class NetworkService {
         let session = Alamofire.Session(configuration: configuration)
         return session
     }()
-    
-    //Перечисление методов доступа
-    enum Methods : String{
-        case groups = "groups.get"
-        case frinds = "friends.get"
-        case photos = "photos.get"
-        case groupsSearch = "groups.search"
-    }
     
     //Перечисление типов альбомов фото пользователей
     enum AlbumID : String {
@@ -42,43 +32,22 @@ class NetworkService {
     }
     
     //Метод формирования сетевого запроса и вывода результата в кансоль
-    private func networkRequest( URL : String, method : HTTPMethod, parameters : Parameters, completion: ((Result<[Any], Error>) -> Void)? = nil){
+    private func networkRequest<T: Decodable>( type : T.Type, URL : String, method : HTTPMethod, parameters : Parameters, completion: ((Result<[Any], Error>) -> Void)? = nil){
         
         AF.request(URL, method: method, parameters: parameters).responseData { response in
             
             switch response.result {
                 
             case .success(let data):
-
-                switch self.method {
-                //Случай когда вызван метод запроса друзей
-                case .frinds:
-                    do {
-                        let users = try JSONDecoder().decode(UserQuery.self, from: data).response.items
-                        
-                        completion?(.success(users))
-                    } catch {
-                        completion?(.failure(error))
-                    }
-                //Случай когда вызван метод запроса групп
-                case .groups, .groupsSearch:
-                    do {
-                        let users = try JSONDecoder().decode(GroupQuery.self, from: data).response.items
-                        completion?(.success(users))
-                    } catch {
-                        completion?(.failure(error))
-                    }
-                //Случай когда вызван метод запроса фото
-                case .photos:
-                    do {
-                        let photos = try JSONDecoder().decode(PhotoQuery.self, from: data).response.items
-                        completion?(.success(photos))
-                    } catch {
-                        completion?(.failure(error))
-                    }
-                case .none:
-                    return
+                
+                do {
+                    let users = try JSONDecoder().decode(ServerResponse<T>.self, from: data).response.items
+                    
+                    completion?(.success(users))
+                } catch {
+                    completion?(.failure(error))
                 }
+                
             case .failure(let error):
                 completion?(.failure(error))
             }
@@ -88,8 +57,7 @@ class NetworkService {
     
     //Метод загрузки друзей пользователя
     func loadFriends(token: String, completion: ((Result<[UserItem], Error>) -> Void)? = nil){
-        method = .frinds
-        let path = "/method/" + method!.rawValue
+        let path = "/method/friends.get"
         
         let params: Parameters = [
             "access_token": token,
@@ -100,7 +68,7 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( URL: baseURL + path, method: .get, parameters: params) { result in
+        networkRequest( type: UserItem.self, URL: baseURL + path, method: .get, parameters: params) { result in
             
             switch result {
             case let .success(users):
@@ -116,8 +84,7 @@ class NetworkService {
     
     //Метод загрузки групп пользователя
     func loadGroups(token: String, completion: ((Result<[GroupItem], Error>) -> Void)? = nil){
-        method = .groups
-        let path = "/method/" + method!.rawValue
+        let path = "/method/groups.get"
         
         let params: Parameters = [
             "access_token": token,
@@ -126,7 +93,7 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: GroupItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             switch result {
             case let .success(groups):
@@ -142,8 +109,7 @@ class NetworkService {
     
     //Метод поиска групп
     func groupsSearch(token: String, searchQuery : String?, completion: ((Result<[GroupItem], Error>) -> Void)? = nil){
-        method = .groupsSearch
-        let path = "/method/" + method!.rawValue
+        let path = "/method/groups.search"
         
         let params: Parameters = [
             "access_token": token,
@@ -154,7 +120,7 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: GroupItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             
             switch result {
@@ -171,8 +137,7 @@ class NetworkService {
     
     //Метод загрузки фото пользователя
     func loadPhotos(token: String, ownerID : Int, albumID : AlbumID, photoCount : Int,completion: ((Result<[PhotoItem], Error>) -> Void)? = nil) {
-        method = .photos
-        let path = "/method/" + method!.rawValue
+        let path = "/method/photos.get"
         
         let params: Parameters = [
             "access_token": token,
@@ -184,7 +149,7 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: PhotoItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             switch result {
             case let .success(photos):
@@ -200,3 +165,11 @@ class NetworkService {
     
 }
 
+class ServerResponse<T: Decodable> : Decodable {
+    var response : Response<T>
+}
+
+class Response<T: Decodable> : Decodable {
+    let count : Int = 0
+    var items : [T] = []
+}

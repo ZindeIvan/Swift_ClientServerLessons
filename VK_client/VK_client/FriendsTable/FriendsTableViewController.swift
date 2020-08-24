@@ -42,11 +42,11 @@ class FriendsViewController : UIViewController{
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         friendsSearchBar.delegate = self
-        //Загрузим список друзей из Realm
-        loadUsersFromRealm()
         //Вызовем загрузку списка друзей из сети
         loadFriendsFromNetwork()
-        //В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
+        //Загрузим список друзей из Realm
+        loadUsersFromRealm()
+//        В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
         friendsListSearchData = friendsList
         //Настроим секции
         setupSections()
@@ -59,6 +59,11 @@ class FriendsViewController : UIViewController{
     
     override func viewDidAppear(_ animated: Bool) {
         friendsTableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadFriendsFromNetwork()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -227,18 +232,11 @@ extension FriendsViewController {
     func loadFriendsFromNetwork(){
         
         networkService.loadFriends(token: Session.instance.token){ [weak self] result in
-            guard let self = self else { return }
             switch result {
             case let .success(users):
-                self.realmService.saveInRealm(array: users)
-                self.setFriendsFromUserItems(users)
-                //Настроим секции
-                self.setupSections()
-                //Настроим элемент прокрутки
-                self.setupFriendsScroller()
-                self.friendsTableView.reloadData()
-                
-                self.loadFriendsAvatarImages()
+                self?.realmService.saveInRealm(array: users)
+                self?.loadUsersFromRealm()
+                self?.loadFriendsAvatarImagesFromNetwork()
             case let .failure(error):
                 print(error)
             }
@@ -246,27 +244,15 @@ extension FriendsViewController {
         
     }
     
-    //Метод установки списка друзей
-    func setFriendsFromUserItems(_ users : [UserItem]){
-        friendsList = []
-        for user in users {
-            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id), userPhoto: "")
-            friendsList.append(newUser)
-        }
-        friendsList = friendsList.sorted()
-        friendsListSearchData = friendsList
-    }
-    
     //Метод загрузки аватарок друзей
-    func loadFriendsAvatarImages(){
+    func loadFriendsAvatarImagesFromNetwork(){
         
         for user in friendsList{
             networkService.loadPhotos(token: Session.instance.token, ownerID: Int(user.userID)!, albumID: .profile, photoCount: 1) { [weak self] result in
                 switch result {
                 case let .success(photo):
-                    self?.friendsListSearchData[(self?.friendsList.firstIndex(of: user))!].userPhoto
-                        = photo[0].photoSizeS
-                    self?.friendsTableView.reloadData()
+                    self?.realmService.saveInRealm(array:photo)
+                    self?.loadUserAvatarsFromRealm()
                 case let .failure(error):
                     print(error)
                 }
@@ -285,6 +271,37 @@ extension FriendsViewController{
         
         guard let usersResults = realmService.loadFromRealm(type: UserItem.self, filter: nil) else {return}
         setFriendsFromUserItems(usersResults as! [UserItem])
+        //Настроим секции
+        setupSections()
+        //Настроим элемент прокрутки
+        setupFriendsScroller()
+        
+        loadUserAvatarsFromRealm()
+        
+        friendsTableView.reloadData()
+    }
+    
+    func loadUserAvatarsFromRealm(){
+        
+        for friend in friendsListSearchData{
+            let searchPredicate = NSPredicate(format: "ownerID == %i", Int(friend.userID) ?? 0)
+            guard let photoResults = realmService.loadFromRealm(type: PhotoItem.self, filter: searchPredicate) else {return}
+            let photos = photoResults as! [PhotoItem]
+            if photos.count != 0 {
+                friendsListSearchData[friendsListSearchData.firstIndex(of: friend)!].userPhoto = photos[0].photoSizeS
+            }
+        }
+    }
+    
+    //Метод установки списка друзей
+    func setFriendsFromUserItems(_ users : [UserItem]){
+        friendsList = []
+        for user in users {
+            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id), userPhoto: "")
+            friendsList.append(newUser)
+        }
+        friendsList = friendsList.sorted()
+        friendsListSearchData = friendsList
     }
     
 }

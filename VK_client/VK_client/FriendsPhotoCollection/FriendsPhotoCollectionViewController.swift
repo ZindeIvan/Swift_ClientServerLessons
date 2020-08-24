@@ -25,10 +25,15 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //Загрузим список фото друга из Realm
-        loadPhotosFromRealm()
         //Вызовем загрузку фото из сети
         loadPhotosFromNetwork()
+        //Загрузим список фото друга из Realm
+        loadPhotosFromRealm()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadPhotosFromRealm()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -64,23 +69,16 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
     //Метод загрузки фото из сети
     func loadPhotosFromNetwork(){
-        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!)!, albumID: .profile, photoCount: photoCount){ [weak self] result in
+        networkService.loadPhotos(token: Session.instance.token, ownerID: Int(friendID!) ?? 0, albumID: .profile, photoCount: photoCount){ [weak self] result in
             switch result {
             case let .success(photos):
                 self?.realmService.saveInRealm(array: photos)
-                self?.setPhotosFromPhotosItems(photos)
-                self?.collectionView.reloadData()
             case let .failure(error):
                 print(error.localizedDescription)
             }
         }
     }
     
-    func setPhotosFromPhotosItems(_ photos: [PhotoItem]){
-        for photo in photos {
-            self.photos.append(photo.photoSizeX)
-        }
-    }
 }
 
 //Расширение для работы с Realm
@@ -88,9 +86,17 @@ extension FriendsPhotoCollectionViewController{
      
     //Метод загрузки списка фото друга из Realm
     func loadPhotosFromRealm(){
-        let searchPredicate = NSPredicate(format: "ownerID == %i", friendID!)
-        guard let groupsResults = realmService.loadFromRealm(type: PhotoItem.self, filter: searchPredicate) else {return}
-        setPhotosFromPhotosItems(groupsResults as! [PhotoItem])
+        let searchPredicate = NSPredicate(format: "ownerID == %i", Int(friendID!) ?? 0)
+        guard let photoResults = realmService.loadFromRealm(type: PhotoItem.self, filter: searchPredicate) else {return}
+        setPhotosFromPhotosItems(photoResults as! [PhotoItem])
+        collectionView.reloadData()
+    }
+    
+    func setPhotosFromPhotosItems(_ photos: [PhotoItem]){
+        self.photos = []
+        for photo in photos {
+            self.photos.append(photo.photoSizeX)
+        }
     }
     
 }

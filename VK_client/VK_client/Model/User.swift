@@ -34,18 +34,7 @@ extension User : Comparable {
     }
 }
 
-//Классы парсинга JSON
-
-class UserQuery : Decodable{
-    
-    var response: UserResponse
-    
-}
-
-class UserResponse : Decodable{
-    let count: Int = 0
-    var items: [UserItem]
-}
+//Класс работы с Realm
 
 class UserItem: Object, Decodable, Itemable {
     @objc dynamic var id: Int = 0

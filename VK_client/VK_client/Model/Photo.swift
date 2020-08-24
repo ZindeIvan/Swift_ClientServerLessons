@@ -9,16 +9,7 @@
 import Foundation
 import RealmSwift
 
-//Классы парсинга JSON
-
-class PhotoQuery : Decodable{
-    var response : PhotoResponse
-}
-
-class PhotoResponse : Decodable{
-    let count: Int = 0
-    var items: [PhotoItem]
-}
+//Класс работы с Realm
 
 class PhotoItem: Object, Decodable, Itemable{
     @objc dynamic var id: Int = 0

@@ -27,12 +27,12 @@ class GroupsTableViewController : UITableViewController {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
+        //Вызовем метод загрузки списка групп из сети
+        loadGroupsFromNetwork()
         //Загрузим список групп из Realm
         loadGroupsFromRealm()
         //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
         groupsListSearchData = groupsList
-        //Вызовем метод загрузки списка групп из сети
-        loadGroupsFromNetwork()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,6 +44,8 @@ class GroupsTableViewController : UITableViewController {
         groupsSearchBar.endEditing(true)
         //Перезагрузим данные таблицы
         tableView.reloadData()
+        //Загрузим список групп из Realm
+        loadGroupsFromRealm()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -130,29 +132,16 @@ extension GroupsTableViewController : UISearchBarDelegate {
 
 //Расширение для работы с сетью
 extension GroupsTableViewController {
-    //Метод загрузки списка групп из сети
+    //Метод загрузки списка групп из сети в базу
     func loadGroupsFromNetwork(){
         networkService.loadGroups(token: Session.instance.token){ [weak self] result in
             switch result {
             case let .success(groups):
                 self?.realmService.saveInRealm(array: groups)
-                self?.setGroupsFromGroupsItems( groups)
-                self?.tableView.reloadData()
             case let .failure(error):
                 print(error)
             }
         }
-    }
-    
-    //Метод установки списка групп поиска
-    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
-        groupsList = []
-        for group in groups {
-            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
-            groupsList.append(newGroup)
-        }
-        groupsList = groupsList.sorted()
-        groupsListSearchData = groupsList
     }
 }
 
@@ -166,4 +155,14 @@ extension GroupsTableViewController{
         setGroupsFromGroupsItems(groupsResults as! [GroupItem])
     }
     
+    //Метод установки списка групп поиска
+    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
+        groupsList = []
+        for group in groups {
+            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
+            groupsList.append(newGroup)
+        }
+        groupsList = groupsList.sorted()
+        groupsListSearchData = groupsList
+    }
 }

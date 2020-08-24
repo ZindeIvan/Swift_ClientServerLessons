@@ -33,16 +33,7 @@ extension Group : Comparable {
     }
 }
 
-//Классы парсинга JSON
-
-class GroupQuery : Decodable{
-    var response : GroupResponse
-}
-
-class GroupResponse : Decodable{
-    let count: Int = 0
-    var items: [GroupItem]
-}
+//Класс работы с Realm
 
 class GroupItem: Object, Decodable , Itemable{
     
