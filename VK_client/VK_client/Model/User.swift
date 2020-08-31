@@ -9,45 +9,8 @@
 import Foundation
 import RealmSwift
 
-//Класс Пользователь
-struct User {
-    //Свойство имени пользователя
-    let userName : String
-    //Свойство идентификатора пользователя
-    let userID : String
-    
-    var userPhoto : String
-    
-}
-
-//Расширим класс для возможности указания равенства экземпляров класса
-extension User : Equatable {
-    static func ==(lhs: User, rhs: User) -> Bool {
-        return lhs.userName == rhs.userName
-    }
-}
-
-//Расширим класс для возможности сравнения экземпляров класса
-extension User : Comparable {
-    static func < (lhs: User, rhs: User) -> Bool {
-        lhs.userName < rhs.userName
-    }
-}
-
-//Классы парсинга JSON
-
-class UserQuery : Decodable{
-    
-    var response: UserResponse
-    
-}
-
-class UserResponse : Decodable{
-    let count: Int = 0
-    var items: [UserItem]
-}
-
-class UserItem: Object, Decodable, Itemable {
+//Класс пользователь
+class User: Object, Decodable{
     @objc dynamic var id: Int = 0
     @objc dynamic var firstName: String = ""
     @objc dynamic var lastName: String = ""

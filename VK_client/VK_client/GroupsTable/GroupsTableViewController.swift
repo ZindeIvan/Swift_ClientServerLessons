@@ -7,30 +7,34 @@
 //
 
 import UIKit
-import  SDWebImage
+import SDWebImage
+import RealmSwift
 
 //Класс для отображения списка групп пользователя
 class GroupsTableViewController : UITableViewController {
     //Элемент поиска
     @IBOutlet weak var groupsSearchBar : UISearchBar!
     
-    //Свойство содержащее массив групп пользователя типа структура Group
-    private var groupsList : [Group] = []
-    //Свойство содержащее массив групп отобранных при помощи поиска
-    private var groupsListSearchData : [Group] = []
+    //Свойство содержащее запрос групп пользователя
+    private var groupsList : Results<Group>?  {
+        let groups: Results<Group>? = realmService?.loadFromRealm()
+        return groups?.sorted(byKeyPath: "id", ascending: true)
+    }
+    //Свойство содержащее запрос групп пользователя с фильтром
+    private var groupsListSearchData : Results<Group>?  {
+        guard let searchText = groupsSearchBar.text else {return groupsList}
+        if searchText == "" {return groupsList}
+        return groupsList?.filter("name CONTAINS[cd] %@", searchText)
+    }
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
-    let networkService = NetworkService()
+    let networkService = NetworkService.shared
     //Свойство содержит ссылку на класс работы с Realm
-    let realmService = RealmService()
+    let realmService = RealmService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
-        //Загрузим список групп из Realm
-        loadGroupsFromRealm()
-        //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-        groupsListSearchData = groupsList
         //Вызовем метод загрузки списка групп из сети
         loadGroupsFromNetwork()
     }
@@ -39,8 +43,6 @@ class GroupsTableViewController : UITableViewController {
         super.viewWillAppear(animated)
         //Уберем текст в строке поиска
         groupsSearchBar.text = ""
-        //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-        groupsListSearchData = groupsList
         groupsSearchBar.endEditing(true)
         //Перезагрузим данные таблицы
         tableView.reloadData()
@@ -48,16 +50,15 @@ class GroupsTableViewController : UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //Возвращаем количество ячеек таблицы = количеству элементов массива groupsList
-        return groupsListSearchData.count
+        return groupsListSearchData?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsTableCell") as? GroupsTableCell else { fatalError() }
         //Зададим надпись ячейки
-        cell.groupNameLabel.text = groupsListSearchData[indexPath.row].groupName
+        cell.groupNameLabel.text = groupsListSearchData?[indexPath.row].name
         //Установим иконку ячейки
-        cell.groupIconView.sd_setImage(with: URL(string: groupsListSearchData[indexPath.row].groupPhoto), placeholderImage: UIImage(named: "error"))
-        
+        cell.groupIconView.sd_setImage(with: URL(string: (groupsListSearchData?[indexPath.item].photo50)!), placeholderImage: UIImage(named: "error"))
         return cell
     }
     
@@ -65,13 +66,11 @@ class GroupsTableViewController : UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         //Если действие - удаление
         if editingStyle == .delete {
-            //Удалим группу из массива групп пользователя
-            let group = groupsListSearchData[indexPath.row]
-            groupsListSearchData.remove(at: indexPath.row)
-            //Удалим ячейку из таблицы
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            guard let index = groupsList.firstIndex(of: group) else {return}
-            groupsList.remove(at: index)
+            //Удалим группу из Realm
+            guard let groups = groupsListSearchData?[indexPath.item] else { return }
+            if (try? realmService?.delete(object: groups)) != nil {
+                tableView.deleteRows(at: [indexPath], with: .right)
+            }
         }
     }
     
@@ -79,24 +78,18 @@ class GroupsTableViewController : UITableViewController {
     @IBAction func addGroup (segue: UIStoryboardSegue){
        //Проверим идентификатор перехода
         if segue.identifier == "addGroup" {
-            //Приведем источник перехода к классу всех доступных групп
+//            Приведем источник перехода к классу всех доступных групп
             guard let allGroupsController = segue.source as? GroupsSearchTableViewController else {return}
             //Установим константу индекса выбранной строки
             if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
                 //Создадим константу выбранной группы по выбранному индексу
                 let group = allGroupsController.getGroupByIndex(index: indexPath.row)!
                 //Проверим нет ли в списке групп пользователя выбранной группы
-                if !groupsList.contains(group) {
-                    //Добавим группу в список
-                    groupsList.append(group)
-                    //Отсортируем список
-                    groupsList = groupsList.sorted()
-                    //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-                    groupsListSearchData = groupsList
-                    //Обновим таблиц
+                if !(groupsList?.contains(group) ?? false){
+                    try? realmService?.saveInRealm(object: group)
                     tableView.reloadData()
                 }
-                
+
             }
         }
     }
@@ -109,8 +102,6 @@ extension GroupsTableViewController : UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         //Уберем текст в строке поиска
         groupsSearchBar.text = ""
-        //В качестве массив групп отобранных при помощи поиска укажем все элементы массива данных
-        groupsListSearchData = groupsList
         groupsSearchBar.endEditing(true)
         //Перезагрузим данные таблицы
         tableView.reloadData()
@@ -118,11 +109,6 @@ extension GroupsTableViewController : UISearchBarDelegate {
     
     //Метод обработки ввода текста в строку поиска
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //Заполним массив групп отобранных при помощи поиска при помощи замыкания
-        groupsListSearchData = searchText.isEmpty ? groupsList : groupsList.filter {
-            (group: Group) -> Bool in
-            return group.groupName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-        }
         //Перезагрузим данные таблицы
         tableView.reloadData()
     }
@@ -130,40 +116,20 @@ extension GroupsTableViewController : UISearchBarDelegate {
 
 //Расширение для работы с сетью
 extension GroupsTableViewController {
-    //Метод загрузки списка групп из сети
+    //Метод загрузки списка групп из сети в базу
     func loadGroupsFromNetwork(){
         networkService.loadGroups(token: Session.instance.token){ [weak self] result in
             switch result {
             case let .success(groups):
-                self?.realmService.saveInRealm(array: groups)
-                self?.setGroupsFromGroupsItems( groups)
-                self?.tableView.reloadData()
+                DispatchQueue.main.async {
+                    //Сохраним полученные данные в Realm
+                    try? self?.realmService?.saveInRealm(objects: groups)
+                    self?.tableView.reloadData()
+                }
             case let .failure(error):
                 print(error)
             }
         }
     }
-    
-    //Метод установки списка групп поиска
-    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
-        groupsList = []
-        for group in groups {
-            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
-            groupsList.append(newGroup)
-        }
-        groupsList = groupsList.sorted()
-        groupsListSearchData = groupsList
-    }
 }
 
-//Расширение для работы с Realm
-extension GroupsTableViewController{
-     
-    //Метод загрузки списка групп из Realm
-    func loadGroupsFromRealm(){
-        
-        guard let groupsResults = realmService.loadFromRealm(type: GroupItem.self, filter: nil) else {return}
-        setGroupsFromGroupsItems(groupsResults as! [GroupItem])
-    }
-    
-}
