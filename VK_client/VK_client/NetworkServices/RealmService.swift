@@ -9,53 +9,53 @@
 import Foundation
 import RealmSwift
 
-//Протокол для классов записи/чтения в/из Realm
-protocol Itemable : Object{
-    
-}
-
 //Клас для работы с Realm
 class RealmService {
     
-    //Метод получения данных с фильтром
-    func loadFromRealm<T: Itemable>(type: T.Type, filter: NSPredicate?)-> Array<Itemable>?{
+    static let shared = RealmService()
+    
+    private init?() {
+        let configuration = Realm.Configuration(schemaVersion: 1, deleteRealmIfMigrationNeeded: true)
+        guard let realm = try? Realm(configuration: configuration) else { return nil }
+        self.realm = realm
         
-        do {
-            let realm = try Realm()
-            if filter == nil {
-                let realmResults = realm.objects(type)
-                return Array(realmResults)
-            }
-            else {
-                let realmResults = realm.objects(type).filter(filter!)
-                return Array(realmResults)
-            }
-            
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
-        
+        print("Realm database file path:")
+        print(realm.configuration.fileURL ?? "")
     }
     
-    //Метод записи объектов в Realm
-    func saveInRealm<T: Itemable>(array: [T]){
-        
-        do {
-            let realm = try Realm()
-            realm.beginWrite()
-            for arrayElement in array {
-                realm.add(arrayElement, update: .modified)
-            }
-            do {
-                try realm.commitWrite()
-            } catch {
-                print(error.localizedDescription)
-            }
-        } catch {
-            print(error.localizedDescription)
+    private let realm: Realm
+    
+    //Метод получения данных
+    func loadFromRealm<T: Object>()-> Results<T> {
+        return realm.objects(T.self)
+    }
+
+    //Метод удаления данных
+    func delete<T: Object>(object: T) throws {
+        try realm.write {
+            realm.delete(object)
         }
     }
     
+    //Метод удаления всех данных
+    func deleteAll() throws {
+        try realm.write {
+            realm.deleteAll()
+        }
+    }
+    
+    //Метод сохранения данных
+    func saveInRealm<T: Object>(object: T) throws {
+        try realm.write {
+            realm.add(object, update: .all)
+        }
+    }
+    
+    //Метод сохранения данных
+    func saveInRealm<T: Object>(objects: [T]) throws {
+        try realm.write {
+            realm.add(objects, update: .all)
+        }
+    }
     
 }

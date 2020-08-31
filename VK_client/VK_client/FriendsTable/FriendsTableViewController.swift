@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 //Класс для отображения списка друзей пользователя
 class FriendsViewController : UIViewController{
@@ -17,11 +18,18 @@ class FriendsViewController : UIViewController{
     //Элемент поиска
     @IBOutlet weak var friendsSearchBar : UISearchBar!
     
-    //Свойство содержащее массив друзей пользователя типа структура User
-    private var friendsList : [User] = []
+    //Свойство содержащее запрос пользователей
+    private var friendsList : Results<User>? {
+        let users: Results<User>? = realmService?.loadFromRealm()
+        return users?.sorted(byKeyPath: "id", ascending: true)
+    }
     
-    //Свойство содержащее массив друзей отобранных при помощи поиска
-    private var friendsListSearchData : [User] = []
+    //Свойство содержащее запрос пользователей с фильтром
+    private var friendsListSearchData : Results<User>? {
+        guard let searchText = friendsSearchBar.text else {return friendsList}
+        if searchText == "" {return friendsList}
+        return friendsList?.filter("name CONTAINS[cd] %@", searchText)
+    }
     
     //Словарь секций
     var sections : [Character: [String]] = [:]
@@ -32,10 +40,10 @@ class FriendsViewController : UIViewController{
     var selectedIndexPath : IndexPath?
     
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
-    let networkService = NetworkService()
+    let networkService = NetworkService.shared
     
     //Свойство содержит ссылку на класс работы с Realm
-    let realmService = RealmService()
+    let realmService = RealmService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,10 +52,7 @@ class FriendsViewController : UIViewController{
         friendsSearchBar.delegate = self
         //Вызовем загрузку списка друзей из сети
         loadFriendsFromNetwork()
-        //Загрузим список друзей из Realm
-        loadUsersFromRealm()
-//        В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
-        friendsListSearchData = friendsList
+        loadFriendsAvatarImagesFromNetwork()
         //Настроим секции
         setupSections()
         //Настроим элемент прокрутки
@@ -77,13 +82,13 @@ class FriendsViewController : UIViewController{
                     fatalError()
                 }
                 //Получим индекс массива друзей по имени пользователя
-                let index = friendsListSearchData.firstIndex { (user) -> Bool in
-                    if user.userName == username {
+                let index = friendsListSearchData?.firstIndex { (user) -> Bool in
+                    if getFullName(user.firstName, user.lastName)  == username {
                         return true
                     }
                     return false
                 }
-                destination.friendID = friendsListSearchData[index!].userID
+                destination.friendID = friendsListSearchData?[index!].id
             }
         }
     }
@@ -92,17 +97,17 @@ class FriendsViewController : UIViewController{
     func setupSections (){
         sections = [:]
         //Обойдем массив пользователей
-        for user in friendsListSearchData {
+        for name in friendsListSearchData?.map({getFullName($0.firstName,$0.lastName)}) ?? [String]() {
             //Возьмем первую букву имени пользователя
-            let firstLetter = user.userName.first!
+            let firstLetter = name.first!
             //Если в массиве секций уже есть секция с такой буквой
             //добавим в словарь имя пользователя
             if sections[firstLetter] != nil {
-                sections[firstLetter]?.append(user.userName)
+                sections[firstLetter]?.append(name)
             }
                 //В противном случае добавим новый элемент словаря
             else {
-                sections[firstLetter] = [user.userName]
+                sections[firstLetter] = [name]
             }
         }
         //Заполним массив заголовков секций
@@ -152,17 +157,27 @@ extension FriendsViewController: UITableViewDataSource {
             fatalError()
         }
         //Найдем индекс друга в списке друзей
-        let index = friendsListSearchData.firstIndex { (user) -> Bool in
-            if user.userName == username {
+        let index = friendsListSearchData?.firstIndex { (user) -> Bool in
+            if getFullName(user.firstName, user.lastName)  == username {
                 return true
             }
             return false
         }
         
         //Зададим надпись ячейки
-        cell.friendNameLabel.text = friendsListSearchData[index!].userName
+        cell.friendNameLabel.text = getFullName(friendsListSearchData?[index!].firstName, friendsListSearchData?[index!].lastName)
         //Установим иконку ячейки
-        cell.iconImageView.sd_setImage(with: URL(string: friendsListSearchData[index!].userPhoto), placeholderImage: UIImage(named: "error"))
+        let photosResult: Results<Photo>? = realmService?.loadFromRealm().filter("ownerID == %i", friendsListSearchData?[index!].id ?? 0)
+        if photosResult?.count ?? 0 > 0 {
+            let photo = photosResult?[0].photoSizeS ?? ""
+            if photo != "" {
+                cell.iconImageView.sd_setImage(with: URL(string: photo), placeholderImage: UIImage(named: "error"))
+            } else {
+                cell.iconImageView.image = UIImage(named: "error")
+            }
+        } else {
+            cell.iconImageView.image = UIImage(named: "error")
+        }
         //Установим настройки тени иконки аватарки друга
         cell.iconShadowView.configureLayer()
         //Установим настройки скругления иконки аватарки друга
@@ -175,6 +190,11 @@ extension FriendsViewController: UITableViewDataSource {
         //Зададим переменную индекса выбранной ячейки
         selectedIndexPath = indexPath
         return indexPath
+    }
+    
+    //Метод получения полного имени из имени и фамилии
+    func getFullName (_ firstName : String?,_ lastName : String?) -> String{
+        return (firstName ?? "") + " " + (lastName ?? "")
     }
     
 }
@@ -202,8 +222,6 @@ extension FriendsViewController : UISearchBarDelegate{
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         //Уберем текст в строке поиска
         friendsSearchBar.text = ""
-        //В качестве массив друзей отобранных при помощи поиска укажем все элементы массива данных
-        friendsListSearchData = friendsList
         friendsSearchBar.endEditing(true)
         //Вызовем метод настройки секций
         setupSections()
@@ -214,11 +232,6 @@ extension FriendsViewController : UISearchBarDelegate{
     
     //Метод обработки ввода текста в строку поиска
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //Заполним массив друзей отобранных при помощи поиска при помощи замыкания
-        friendsListSearchData = searchText.isEmpty ? friendsList : friendsList.filter {
-            (user: User) -> Bool in
-            return user.userName.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-        }
         //Вызовем метод настройки секций
         setupSections()
         //Перезагрузим данные таблицы
@@ -234,8 +247,10 @@ extension FriendsViewController {
         networkService.loadFriends(token: Session.instance.token){ [weak self] result in
             switch result {
             case let .success(users):
-                self?.realmService.saveInRealm(array: users)
-                self?.loadUsersFromRealm()
+                DispatchQueue.main.async {
+                    try? self?.realmService?.saveInRealm(objects: users)
+                    self?.friendsTableView.reloadData()
+                }
                 self?.loadFriendsAvatarImagesFromNetwork()
             case let .failure(error):
                 print(error)
@@ -247,63 +262,20 @@ extension FriendsViewController {
     //Метод загрузки аватарок друзей
     func loadFriendsAvatarImagesFromNetwork(){
         
-        for user in friendsList{
-            networkService.loadPhotos(token: Session.instance.token, ownerID: Int(user.userID)!, albumID: .profile, photoCount: 1) { [weak self] result in
+        for userID in friendsList?.map({$0.id}) ?? [Int]() {
+            networkService.loadPhotos(token: Session.instance.token, ownerID: userID, albumID: .profile, photoCount: 1) { [weak self] result in
                 switch result {
                 case let .success(photo):
-                    self?.realmService.saveInRealm(array:photo)
-                    self?.loadUserAvatarsFromRealm()
+                    DispatchQueue.main.async {
+                        try? self?.realmService?.saveInRealm(object: photo[0])
+                        self?.friendsTableView.reloadData()
+                    }
                 case let .failure(error):
                     print(error)
                 }
             }
         }
     }
-    
-    
-}
-
-//Расширение для работы с Realm
-extension FriendsViewController{
-    
-    //Метод загрузки списка друзей из Realm
-    func loadUsersFromRealm(){
-        
-        guard let usersResults = realmService.loadFromRealm(type: UserItem.self, filter: nil) else {return}
-        setFriendsFromUserItems(usersResults as! [UserItem])
-        //Настроим секции
-        setupSections()
-        //Настроим элемент прокрутки
-        setupFriendsScroller()
-        
-        loadUserAvatarsFromRealm()
-        
-        friendsTableView.reloadData()
-    }
-    
-    func loadUserAvatarsFromRealm(){
-        
-        for friend in friendsListSearchData{
-            let searchPredicate = NSPredicate(format: "ownerID == %i", Int(friend.userID) ?? 0)
-            guard let photoResults = realmService.loadFromRealm(type: PhotoItem.self, filter: searchPredicate) else {return}
-            let photos = photoResults as! [PhotoItem]
-            if photos.count != 0 {
-                friendsListSearchData[friendsListSearchData.firstIndex(of: friend)!].userPhoto = photos[0].photoSizeS
-            }
-        }
-    }
-    
-    //Метод установки списка друзей
-    func setFriendsFromUserItems(_ users : [UserItem]){
-        friendsList = []
-        for user in users {
-            let newUser = User(userName: user.firstName + " " + user.lastName, userID: String(user.id), userPhoto: "")
-            friendsList.append(newUser)
-        }
-        friendsList = friendsList.sorted()
-        friendsListSearchData = friendsList
-    }
-    
 }
     
 

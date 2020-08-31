@@ -17,7 +17,7 @@ class GroupsSearchTableViewController : UITableViewController {
    private var groupsList : [Group] = []
 
     //Свойство содержащее ссылку на класс работы с сетевыми запросами
-    let networkService = NetworkService()
+    let networkService = NetworkService.shared
     
     //Метод возвращает Группу по индексу
     func getGroupByIndex (index : Int) -> Group? {
@@ -41,9 +41,9 @@ class GroupsSearchTableViewController : UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsSearchTableCell") as? GroupsSearchTableCell else { fatalError() }
         //Зададим надпись ячейки
-        cell.groupSearchNameLabel.text = groupsList[indexPath.row].groupName
+        cell.groupSearchNameLabel.text = groupsList[indexPath.row].name
         //Установим иконку ячейки
-        cell.groupSearchIconView.sd_setImage(with: URL(string: groupsList[indexPath.row].groupPhoto), placeholderImage: UIImage(named: "error"))
+        cell.groupSearchIconView.sd_setImage(with: URL(string: groupsList[indexPath.row].photo50), placeholderImage: UIImage(named: "error"))
         return cell
     }
 }
@@ -79,21 +79,11 @@ extension GroupsSearchTableViewController {
         networkService.groupsSearch(token: Session.instance.token, searchQuery: searchText){ [weak self] result in
             switch result {
             case let .success(groups):
-                self?.setGroupsFromGroupsItems(groups)
+                self?.groupsList = groups
                 self?.tableView.reloadData()
             case let .failure(error):
                 print(error)
             }
         }
-    }
-    
-    //Метод установки списка групп
-    func setGroupsFromGroupsItems(_ groups: [GroupItem]){
-        groupsList = []
-        for group in groups {
-            let newGroup = Group(groupName: group.name, groupID: String(group.id), groupPhoto: group.photo50)
-            groupsList.append(newGroup)
-        }
-        groupsList = groupsList.sorted()
     }
 }

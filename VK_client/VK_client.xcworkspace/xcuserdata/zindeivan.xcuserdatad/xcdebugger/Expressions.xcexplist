@@ -3,14 +3,6 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "FriendsViewController.friendsList.didset:FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "friendsList">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "FriendsScrollerControlView.lettreSelected(_:):FriendsScrollerControlView.swift">
          <PersistentStrings>
             <PersistentString
@@ -19,10 +11,203 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "FriendsViewController.setUserFromUserItems(_:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "users">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parametrs:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parameters:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.loadUsersFromRealm():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "usersResults">
+            </PersistentString>
+            <PersistentString
+               value = "Array(usersResults)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photos">
+            </PersistentString>
+            <PersistentString
+               value = "photos![friendPhotoID!]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in FriendsViewController.loadFriendsAvatarImagesFromNetwork():FriendsTableViewController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "RealmService.saveInRealm&lt;A&gt;(array:):RealmService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "main:AppDelegate.swift">
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.setGroupsFromGroupsItems(groups:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsList">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "sectionsTitles">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.layoutSubviews():FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray ">
+            </PersistentString>
+            <PersistentString
+               value = "stackView">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in closure #1 in GroupsTableViewController.loadGroupsFromNetwork(completion:):GroupsTableViewController.swift">
+      </ContextState>
+      <ContextState
          contextName = "VKLoginViewController.webView(_:decidePolicyFor:decisionHandler:):VKLoginViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "Session.instance.token">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.tableView(_:cellForRowAt:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsListSearchData">
+            </PersistentString>
+            <PersistentString
+               value = "cell.groupNameLabel.text">
+            </PersistentString>
+            <PersistentString
+               value = "cell.groupIconView.image">
+            </PersistentString>
+            <PersistentString
+               value = "groupsListSearchData?.count">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.item">
+            </PersistentString>
+            <PersistentString
+               value = "groupsListSearchData?[indexPath.item]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.tableView(_:numberOfRowsInSection:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsList?.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in NetworkService.loadGroups(token:):NetworkService.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsPhotoCollectionViewController.loadPhotosFromRealm():FriendsPhotoCollectionViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsResults">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsPhotoCollectionViewController.viewDidLoad():FriendsPhotoCollectionViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "realm.configuration.fileURL&#10;print(realm.configuration.fileURL)&#10;print(realm.configuration.fileURL)&#10;print(realm.configuration.fileURL)&#10;">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsScrollerControlView.setLetters(letters:):FriendsScrollerControlView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "lettersArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.friendsList.didset:FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friendsList">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photos">
+            </PersistentString>
+            <PersistentString
+               value = "photos?[indexPath.row]">
+            </PersistentString>
+            <PersistentString
+               value = "photos?[indexPath.row].photoSizeX">
+            </PersistentString>
+            <PersistentString
+               value = "friendID">
+            </PersistentString>
+            <PersistentString
+               value = "photos?.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.setGroupsFromGroupsItems(_:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "groupsList">
+            </PersistentString>
+            <PersistentString
+               value = "group.name">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "RealmService.loadFromRealm&lt;A&gt;(type:):RealmService.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "Array(realmResults)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NetworkService.loadGroups(token:):NetworkService.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "print(json)">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -53,16 +238,19 @@
          contextName = "NetworkService.loadFriends(token:completion:):NetworkService.swift">
       </ContextState>
       <ContextState
-         contextName = "FriendsPhotoCollectionViewController.viewDidLoad():FriendsPhotoCollectionViewController.swift">
+         contextName = "FriendsViewController.tableView(_:cellForRowAt:):FriendsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "realm.configuration.fileURL&#10;print(realm.configuration.fileURL)&#10;print(realm.configuration.fileURL)&#10;print(realm.configuration.fileURL)&#10;">
+               value = "friendsListSearchData[index!].userPhoto">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "RealmService.loadFromRealm&lt;A&gt;(type:):RealmService.swift">
+         contextName = "RealmService.loadFromRealm&lt;A&gt;(type:filter:):RealmService.swift">
          <PersistentStrings>
+            <PersistentString
+               value = "Array(realm.objects(type))">
+            </PersistentString>
             <PersistentString
                value = "Array(realmResults)">
             </PersistentString>
@@ -80,160 +268,34 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parametrs:completion:):NetworkService.swift">
-      </ContextState>
-      <ContextState
-         contextName = "NetworkService.loadGroups(token:):NetworkService.swift">
+         contextName = "closure #1 in GroupsTableViewController.loadGroupsFromNetwork(completion:):GroupsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "print(json)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsViewController.tableView(_:cellForRowAt:):FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "friendsListSearchData[index!].userPhoto">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsPhotoCollectionViewController.loadPhotosFromRealm():FriendsPhotoCollectionViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "groupsResults">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "main:AppDelegate.swift">
-      </ContextState>
-      <ContextState
-         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "friendPhotoID">
-            </PersistentString>
-            <PersistentString
-               value = "photos">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "photos![friendPhotoID!]">
-            </PersistentString>
-            <PersistentString
-               value = "photos">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "photos">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "RealmService.loadFromRealm&lt;A&gt;(type:filter:):RealmService.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "Array(realm.objects(type))">
-            </PersistentString>
-            <PersistentString
-               value = "Array(realmResults)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "sectionsTitles">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "closure #1 in NetworkService.loadGroups(token:):NetworkService.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "json">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsViewController.setUserFromUserItems(_:):FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "users">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "closure #1 in NetworkService.networkRequest(URL:method:parameters:completion:):NetworkService.swift">
-      </ContextState>
-      <ContextState
-         contextName = "closure #1 in FriendsViewController.loadFriendsAvatarImagesFromNetwork():FriendsTableViewController.swift">
-      </ContextState>
-      <ContextState
-         contextName = "FriendsScrollerControlView.layoutSubviews():FriendsScrollerControlView.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "lettersArray ">
-            </PersistentString>
-            <PersistentString
-               value = "stackView">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsScrollerControlView.setLetters(letters:):FriendsScrollerControlView.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "lettersArray">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "RealmService.saveInRealm&lt;A&gt;(array:):RealmService.swift">
-      </ContextState>
-      <ContextState
-         contextName = "GroupsTableViewController.setGroupsFromGroupsItems(_:):GroupsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "groupsList">
-            </PersistentString>
-            <PersistentString
-               value = "group.name">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "FriendsViewController.loadUsersFromRealm():FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "usersResults">
-            </PersistentString>
-            <PersistentString
-               value = "Array(usersResults)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "GroupsTableViewController.setGroupsFromGroupsItems(groups:):GroupsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "groupsList">
+               value = "groups">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "NetworkService.loadPhotos(token:ownerID:albumID:photoCount:completion:):NetworkService.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PhotoViewController.setImages():PhotoViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "photos">
+            </PersistentString>
+            <PersistentString
+               value = "friendPhotoID">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.groupsListSearchData.getter:GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "searchText == &quot;&quot;">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

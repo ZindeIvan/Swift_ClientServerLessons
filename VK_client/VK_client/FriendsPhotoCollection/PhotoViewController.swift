@@ -40,7 +40,7 @@ class PhotoViewController : UIViewController {
     private var newPhotoID : Int = 0
     
     //Идентификатор друга
-    private var friendID : String?
+    private var friendID : Int?
     //Количество фото друга
     private var friendPhotoCount : Int?
     //Идентификатор текущего фото
@@ -51,7 +51,7 @@ class PhotoViewController : UIViewController {
     var interactiveAnimator: UIViewPropertyAnimator?
     
     //Метод установки данных друга
-    func setPhotoInformation(friendID : String?, friendPhotoCount : Int, friendPhotoID: Int, photos : [String]){
+    func setPhotoInformation(friendID : Int?, friendPhotoCount : Int, friendPhotoID: Int, photos : [String]){
         self.friendID = friendID
         self.friendPhotoCount = friendPhotoCount
         self.friendPhotoID = friendPhotoID

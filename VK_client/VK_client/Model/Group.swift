@@ -9,33 +9,8 @@
 import Foundation
 import RealmSwift
 
-//Класс Группы
-struct Group {
-    //Свойство названия группы
-    let groupName : String
-    //Свойство идентификатора группы
-    let groupID : String
-    
-    let groupPhoto : String
-}
-
-//Расширим класс для возможности указания равенства экземпляров класса
-extension Group : Equatable {
-    static func ==(lhs: Group, rhs: Group) -> Bool {
-        return lhs.groupID == rhs.groupID
-    }
-}
-
-//Расширим класс для возможности сравнения экземпляров класса
-extension Group : Comparable {
-    static func < (lhs: Group, rhs: Group) -> Bool {
-        lhs.groupID < rhs.groupID
-    }
-}
-
-//Класс работы с Realm
-
-class GroupItem: Object, Decodable , Itemable{
+//Класс группы
+class Group: Object, Decodable{
     
     @objc dynamic var id: Int = 0
     @objc dynamic var name: String = ""

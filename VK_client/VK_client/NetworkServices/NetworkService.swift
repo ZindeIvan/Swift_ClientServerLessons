@@ -17,6 +17,10 @@ class NetworkService {
     //Свойство версии API
     private let apiVersion : String = "5.122"
     
+    static let shared = NetworkService()
+    
+    private init(){}
+    
     static let session: Alamofire.Session = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 20
@@ -56,7 +60,7 @@ class NetworkService {
     }
     
     //Метод загрузки друзей пользователя
-    func loadFriends(token: String, completion: ((Result<[UserItem], Error>) -> Void)? = nil){
+    func loadFriends(token: String, completion: ((Result<[User], Error>) -> Void)? = nil){
         let path = "/method/friends.get"
         
         let params: Parameters = [
@@ -68,11 +72,11 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( type: UserItem.self, URL: baseURL + path, method: .get, parameters: params) { result in
+        networkRequest( type: User.self, URL: baseURL + path, method: .get, parameters: params) { result in
             
             switch result {
             case let .success(users):
-                completion?(.success(users as! [UserItem]))
+                completion?(.success(users as! [User]))
             case let .failure(error):
                 print(error.localizedDescription)
                 completion?(.failure(error))
@@ -83,7 +87,7 @@ class NetworkService {
     }
     
     //Метод загрузки групп пользователя
-    func loadGroups(token: String, completion: ((Result<[GroupItem], Error>) -> Void)? = nil){
+    func loadGroups(token: String, completion: ((Result<[Group], Error>) -> Void)? = nil){
         let path = "/method/groups.get"
         
         let params: Parameters = [
@@ -93,11 +97,11 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( type: GroupItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: Group.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             switch result {
             case let .success(groups):
-                completion?(.success(groups as! [GroupItem]))
+                completion?(.success(groups as! [Group]))
             case let .failure(error):
                 print(error.localizedDescription)
                 completion?(.failure(error))
@@ -108,7 +112,7 @@ class NetworkService {
     }
     
     //Метод поиска групп
-    func groupsSearch(token: String, searchQuery : String?, completion: ((Result<[GroupItem], Error>) -> Void)? = nil){
+    func groupsSearch(token: String, searchQuery : String?, completion: ((Result<[Group], Error>) -> Void)? = nil){
         let path = "/method/groups.search"
         
         let params: Parameters = [
@@ -120,12 +124,12 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( type: GroupItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: Group.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             
             switch result {
             case let .success(groups):
-                completion?(.success(groups as! [GroupItem]))
+                completion?(.success(groups as! [Group]))
             case let .failure(error):
                 print(error.localizedDescription)
                 completion?(.failure(error))
@@ -136,7 +140,7 @@ class NetworkService {
     }
     
     //Метод загрузки фото пользователя
-    func loadPhotos(token: String, ownerID : Int, albumID : AlbumID, photoCount : Int,completion: ((Result<[PhotoItem], Error>) -> Void)? = nil) {
+    func loadPhotos(token: String, ownerID : Int, albumID : AlbumID, photoCount : Int,completion: ((Result<[Photo], Error>) -> Void)? = nil) {
         let path = "/method/photos.get"
         
         let params: Parameters = [
@@ -149,11 +153,11 @@ class NetworkService {
             "v": apiVersion
         ]
         
-        networkRequest( type: PhotoItem.self, URL: baseURL + path, method: .get, parameters: params){ result in
+        networkRequest( type: Photo.self, URL: baseURL + path, method: .get, parameters: params){ result in
             
             switch result {
             case let .success(photos):
-                completion?(.success(photos as! [PhotoItem]))
+                completion?(.success(photos as! [Photo]))
             case let .failure(error):
                 print(error.localizedDescription)
                 completion?(.failure(error))
