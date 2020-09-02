@@ -68,7 +68,7 @@ class NetworkService {
             "order": "name",
             "count" : 20,
             "offset" : 0,
-            "fields" : "city",
+            "fields" : "photo_50",
             "v": apiVersion
         ]
         

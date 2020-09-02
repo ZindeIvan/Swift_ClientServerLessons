@@ -31,10 +31,13 @@ class GroupsTableViewController : UITableViewController {
     //Свойство содержит ссылку на класс работы с Realm
     let realmService = RealmService.shared
     
+    private var groupsListSearchDataNotificationToken: NotificationToken?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
+        setNotifications()
         //Вызовем метод загрузки списка групп из сети
         loadGroupsFromNetwork()
     }
@@ -87,7 +90,7 @@ class GroupsTableViewController : UITableViewController {
                 //Проверим нет ли в списке групп пользователя выбранной группы
                 if !(groupsList?.contains(group) ?? false){
                     try? realmService?.saveInRealm(object: group)
-                    tableView.reloadData()
+//                    tableView.reloadData()
                 }
 
             }
@@ -124,12 +127,56 @@ extension GroupsTableViewController {
                 DispatchQueue.main.async {
                     //Сохраним полученные данные в Realm
                     try? self?.realmService?.saveInRealm(objects: groups)
-                    self?.tableView.reloadData()
+//                    self?.tableView.reloadData()
                 }
             case let .failure(error):
                 print(error)
             }
         }
+    }
+}
+
+extension GroupsTableViewController {
+
+    func setNotifications(){
+        groupsListSearchDataNotificationToken = groupsListSearchData?.observe { [weak self] change in
+            switch change {
+            case .initial:
+                #if DEBUG
+                print("Initialized")
+                #endif
+                
+            case let .update(results, deletions: deletions, insertions: insertions, modifications: modifications):
+                #if DEBUG
+                print("""
+                    New count: \(results.count)
+                    Deletions: \(deletions)
+                    Insertions: \(insertions)
+                    Modifications: \(modifications)
+                    """)
+                #endif
+                
+                self?.tableView.beginUpdates()
+                self?.tableView.deleteRows(at: deletions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                    self?.tableView.insertRows(at: insertions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                    self?.tableView.reloadRows(at: modifications.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                self?.tableView.endUpdates()
+
+            case let .error(error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+        
+    }
+    
+    func showAlert(title: String? = nil,
+                   message: String? = nil,
+                   handler: ((UIAlertAction) -> ())? = nil,
+                   completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: completion)
     }
 }
 

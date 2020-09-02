@@ -10,9 +10,15 @@ import UIKit
 import RealmSwift
 
 //Класс для отображения списка друзей пользователя
-class FriendsViewController : UIViewController{
+class FriendsViewController : BaseViewController{
     //Элемент таблицы
-    @IBOutlet weak var friendsTableView: UITableView!
+    @IBOutlet weak var friendsTableView: UITableView!{
+        didSet{
+            friendsTableView.dataSource = self
+            friendsTableView.delegate = self
+            friendsSearchBar.delegate = self
+        }
+    }
     //Элемент прокрутки
     @IBOutlet weak var friendsScroller : FriendsScrollerControlView!
     //Элемент поиска
@@ -28,8 +34,10 @@ class FriendsViewController : UIViewController{
     private var friendsListSearchData : Results<User>? {
         guard let searchText = friendsSearchBar.text else {return friendsList}
         if searchText == "" {return friendsList}
-        return friendsList?.filter("name CONTAINS[cd] %@", searchText)
+//        return friendsList?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText)
+        return friendsList?.filter("firstName CONTAINS[cd] %@", searchText)
     }
+    var sortedUsers : [User] = []
     
     //Словарь секций
     var sections : [Character: [String]] = [:]
@@ -45,25 +53,26 @@ class FriendsViewController : UIViewController{
     //Свойство содержит ссылку на класс работы с Realm
     let realmService = RealmService.shared
     
+    private var filteredFriendsNotificationToken: NotificationToken?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        friendsTableView.dataSource = self
-        friendsTableView.delegate = self
-        friendsSearchBar.delegate = self
-        //Вызовем загрузку списка друзей из сети
-        loadFriendsFromNetwork()
-        loadFriendsAvatarImagesFromNetwork()
+        
+        if let friends = friendsList, friends.isEmpty {
+            //Вызовем загрузку списка друзей из сети
+            loadFriendsFromNetwork()
+        }
         //Настроим секции
         setupSections()
         //Настроим элемент прокрутки
         setupFriendsScroller()
         //Зарегистрируем Заголовок секций
         friendsTableView.register(UINib(nibName: "FriendsTableSectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "sectionHeader")
-        
+        setNotifications()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        friendsTableView.reloadData()
+//        friendsTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -167,14 +176,8 @@ extension FriendsViewController: UITableViewDataSource {
         //Зададим надпись ячейки
         cell.friendNameLabel.text = getFullName(friendsListSearchData?[index!].firstName, friendsListSearchData?[index!].lastName)
         //Установим иконку ячейки
-        let photosResult: Results<Photo>? = realmService?.loadFromRealm().filter("ownerID == %i", friendsListSearchData?[index!].id ?? 0)
-        if photosResult?.count ?? 0 > 0 {
-            let photo = photosResult?[0].photoSizeS ?? ""
-            if photo != "" {
-                cell.iconImageView.sd_setImage(with: URL(string: photo), placeholderImage: UIImage(named: "error"))
-            } else {
-                cell.iconImageView.image = UIImage(named: "error")
-            }
+        if let photo = friendsListSearchData?[index!].photo50 {
+            cell.iconImageView.sd_setImage(with: URL(string: photo), placeholderImage: UIImage(named: "error"))
         } else {
             cell.iconImageView.image = UIImage(named: "error")
         }
@@ -249,34 +252,68 @@ extension FriendsViewController {
             case let .success(users):
                 DispatchQueue.main.async {
                     try? self?.realmService?.saveInRealm(objects: users)
-                    self?.friendsTableView.reloadData()
+//                    self?.friendsTableView.reloadData()
+                    self?.sortedUsers = Array((self?.friendsList)!)
                 }
-                self?.loadFriendsAvatarImagesFromNetwork()
             case let .failure(error):
                 print(error)
             }
         }
         
     }
-    
-    //Метод загрузки аватарок друзей
-    func loadFriendsAvatarImagesFromNetwork(){
-        
-        for userID in friendsList?.map({$0.id}) ?? [Int]() {
-            networkService.loadPhotos(token: Session.instance.token, ownerID: userID, albumID: .profile, photoCount: 1) { [weak self] result in
-                switch result {
-                case let .success(photo):
-                    DispatchQueue.main.async {
-                        try? self?.realmService?.saveInRealm(object: photo[0])
-                        self?.friendsTableView.reloadData()
-                    }
-                case let .failure(error):
-                    print(error)
-                }
+
+}
+
+extension FriendsViewController {
+
+    func setNotifications(){
+        filteredFriendsNotificationToken = friendsListSearchData?.observe { [weak self] change in
+            switch change {
+            case .initial:
+                #if DEBUG
+                print("Initialized")
+                #endif
+                
+            case let .update(results, deletions: deletions, insertions: insertions, modifications: modifications):
+                #if DEBUG
+                print("""
+                    New count: \(results.count)
+                    Deletions: \(deletions)
+                    Insertions: \(insertions)
+                    Modifications: \(modifications)
+                    """)
+                #endif
+                
+                let deletionsIndexes = self?.getIndexPathsFromIndexes(indexes: deletions)
+                let insertionsIndexes = self?.getIndexPathsFromIndexes(indexes: insertions)
+                let modifications = self?.getIndexPathsFromIndexes(indexes: modifications)
+                
+                self?.friendsTableView.beginUpdates()
+                self?.setupSections()
+                self?.friendsTableView.deleteRows(at: deletionsIndexes ?? [IndexPath](), with: .automatic)
+                self?.friendsTableView.insertRows(at: insertionsIndexes ?? [IndexPath](), with: .automatic)
+                self?.friendsTableView.reloadRows(at: modifications ?? [IndexPath](), with: .automatic)
+
+                self?.friendsTableView.endUpdates()
+
+            case let .error(error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
             }
         }
+        
+    }
+    
+    func getIndexPathsFromIndexes(indexes: [Int]) -> [IndexPath]{
+        var indexPaths : [IndexPath] = []
+        for index in indexes {
+            let friend = sortedUsers[index]
+            guard let sectionIndex = sectionsTitles.firstIndex(of: friend.firstName.first!) else {continue}
+            guard let rowIndex = sections[sectionsTitles[sectionIndex]]!.firstIndex(of: getFullName(friend.firstName, friend.lastName)) else {continue}
+            indexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
+        }
+        return indexPaths
     }
 }
-    
+
 
 
