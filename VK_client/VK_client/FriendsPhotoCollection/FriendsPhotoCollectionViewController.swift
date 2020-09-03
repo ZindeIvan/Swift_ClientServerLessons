@@ -11,7 +11,7 @@ import RealmSwift
 import SDWebImage
 
 //Класс для отображения коллекции фото друзей пользователя
-class FriendsPhotoCollectionViewController : UICollectionViewController {
+class FriendsPhotoCollectionViewController : UICollectionViewController{
     //Свойство идентификатора друга пользователя
     var friendID : Int?
     //Свойство содержащее запрос фото
@@ -27,9 +27,13 @@ class FriendsPhotoCollectionViewController : UICollectionViewController {
     
     //Свойство содержит ссылку на класс работы с Realm
     let realmService = RealmService.shared
+    //Свойство - токен для наблюдения за изменениями данных в Realm
+    private var photosNotificationToken: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Установим оповещения
+        setNotifications()
         //Вызовем загрузку фото из сети
         loadPhotosFromNetwork()
     }
@@ -78,10 +82,63 @@ extension FriendsPhotoCollectionViewController {
                     self?.collectionView.reloadData()
                 }
             case let .failure(error):
-                print(error.localizedDescription)
+                self?.showAlert(title: "Error", message: error.localizedDescription)
             }
         }
     }
     
 }
+
+//Методы работы с оповещениями Realm
+extension FriendsPhotoCollectionViewController {
+
+    //Метод установки оповещений
+    func setNotifications(){
+        //Установим наблюдателя для событий с данными в БД
+        photosNotificationToken = photos?.observe { [weak self] change in
+            switch change {
+            //Инициализация
+            case .initial:
+                #if DEBUG
+                print("Initialized")
+                #endif
+            //Изменение
+            case let .update(results, deletions: deletions, insertions: insertions, modifications: modifications):
+                #if DEBUG
+                print("""
+                    New count: \(results.count)
+                    Deletions: \(deletions)
+                    Insertions: \(insertions)
+                    Modifications: \(modifications)
+                    """)
+                #endif
+                
+                self?.collectionView.performBatchUpdates({
+                    //Удаление элементов
+                    self?.collectionView.deleteItems(at: deletions.map { IndexPath(item: $0, section: 0) })
+                    //Добавление элементов
+                    self?.collectionView.insertItems(at: insertions.map { IndexPath(item: $0, section: 0) })
+                    //Обновление элементов
+                    self?.collectionView.reloadItems(at: modifications.map { IndexPath(item: $0, section: 0) })
+                })
+
+            case let .error(error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+        
+    }
+    
+    //Метод вызова оповещений об ошибках
+    func showAlert(title: String? = nil,
+                   message: String? = nil,
+                   handler: ((UIAlertAction) -> ())? = nil,
+                   completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: completion)
+    }
+}
+
 

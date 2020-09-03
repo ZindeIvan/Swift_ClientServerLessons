@@ -11,10 +11,41 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "FriendsViewController.getIndexPathsFromIndexes(indexes:):FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "friend.firstName">
+            </PersistentString>
+            <PersistentString
+               value = "friendsListSearchData?[index]">
+            </PersistentString>
+            <PersistentString
+               value = "sections">
+            </PersistentString>
+            <PersistentString
+               value = "sortedUsers">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "FriendsViewController.setUserFromUserItems(_:):FriendsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "users">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in FriendsViewController.setNotifications():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "indexes">
+            </PersistentString>
+            <PersistentString
+               value = "insertionsIndexes">
+            </PersistentString>
+            <PersistentString
+               value = "insertionsIndexes![0].section">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -64,14 +95,6 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "sectionsTitles">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "FriendsScrollerControlView.layoutSubviews():FriendsScrollerControlView.swift">
          <PersistentStrings>
             <PersistentString
@@ -79,6 +102,14 @@
             </PersistentString>
             <PersistentString
                value = "stackView">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsViewController.setupFriendsScroller():FriendsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "sectionsTitles">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -97,22 +128,22 @@
          contextName = "GroupsTableViewController.tableView(_:cellForRowAt:):GroupsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "groupsListSearchData">
-            </PersistentString>
-            <PersistentString
-               value = "cell.groupNameLabel.text">
-            </PersistentString>
-            <PersistentString
                value = "cell.groupIconView.image">
             </PersistentString>
             <PersistentString
-               value = "groupsListSearchData?.count">
+               value = "groupsListSearchData">
             </PersistentString>
             <PersistentString
                value = "indexPath.item">
             </PersistentString>
             <PersistentString
                value = "groupsListSearchData?[indexPath.item]">
+            </PersistentString>
+            <PersistentString
+               value = "cell.groupNameLabel.text">
+            </PersistentString>
+            <PersistentString
+               value = "groupsListSearchData?.count">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

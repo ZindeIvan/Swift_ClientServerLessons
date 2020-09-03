@@ -32,6 +32,7 @@
 		B5483CBA24BB3EAF002B57B8 /* LikeControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */; };
 		B57E2D6E24B62D7A006CD7F3 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */; };
 		B57E2D7124B62F9A006CD7F3 /* FriendsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57E2D7024B62F9A006CD7F3 /* FriendsTableCell.swift */; };
+		B57FD40824FFF17400B64DA5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57FD40724FFF17400B64DA5 /* BaseViewController.swift */; };
 		B590EDD224AF67EA00179DEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B590EDD124AF67EA00179DEA /* AppDelegate.swift */; };
 		B590EDD424AF67EA00179DEA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B590EDD324AF67EA00179DEA /* SceneDelegate.swift */; };
 		B590EDD624AF67EA00179DEA /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B590EDD524AF67EA00179DEA /* LoginViewController.swift */; };
@@ -71,6 +72,7 @@
 		B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeControlView.swift; sourceTree = "<group>"; };
 		B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
 		B57E2D7024B62F9A006CD7F3 /* FriendsTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableCell.swift; sourceTree = "<group>"; };
+		B57FD40724FFF17400B64DA5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B590EDCE24AF67EA00179DEA /* VK_client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VK_client.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B590EDD124AF67EA00179DEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B590EDD324AF67EA00179DEA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				B590EDD124AF67EA00179DEA /* AppDelegate.swift */,
 				B590EDDA24AF67EB00179DEA /* Assets.xcassets */,
 				B590EDDF24AF67EB00179DEA /* Info.plist */,
+				B57FD40724FFF17400B64DA5 /* BaseViewController.swift */,
 			);
 			path = VK_client;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				B546E4AE24B76EAA0003FEA3 /* FriendsPhotoCollectionViewController.swift in Sources */,
 				B541A56824E45B2F00E79AB8 /* NetworkService.swift in Sources */,
 				B541A56324E4505A00E79AB8 /* VKLoginViewController.swift in Sources */,
+				B57FD40824FFF17400B64DA5 /* BaseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
