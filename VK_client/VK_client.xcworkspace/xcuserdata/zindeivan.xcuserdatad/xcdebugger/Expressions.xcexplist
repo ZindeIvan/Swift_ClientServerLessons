@@ -22,6 +22,9 @@
             <PersistentString
                value = "sections">
             </PersistentString>
+            <PersistentString
+               value = "sortedUsers">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -37,6 +40,12 @@
          <PersistentStrings>
             <PersistentString
                value = "indexes">
+            </PersistentString>
+            <PersistentString
+               value = "insertionsIndexes">
+            </PersistentString>
+            <PersistentString
+               value = "insertionsIndexes![0].section">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -61,10 +70,10 @@
          contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos![friendPhotoID!]">
+               value = "photos">
             </PersistentString>
             <PersistentString
-               value = "photos">
+               value = "photos![friendPhotoID!]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -119,10 +128,13 @@
          contextName = "GroupsTableViewController.tableView(_:cellForRowAt:):GroupsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
+               value = "cell.groupIconView.image">
+            </PersistentString>
+            <PersistentString
                value = "groupsListSearchData">
             </PersistentString>
             <PersistentString
-               value = "cell.groupIconView.image">
+               value = "indexPath.item">
             </PersistentString>
             <PersistentString
                value = "groupsListSearchData?[indexPath.item]">
@@ -132,9 +144,6 @@
             </PersistentString>
             <PersistentString
                value = "groupsListSearchData?.count">
-            </PersistentString>
-            <PersistentString
-               value = "indexPath.item">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -190,10 +199,10 @@
          contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos?[indexPath.row]">
+               value = "photos">
             </PersistentString>
             <PersistentString
-               value = "photos">
+               value = "photos?[indexPath.row]">
             </PersistentString>
             <PersistentString
                value = "photos?[indexPath.row].photoSizeX">
@@ -304,10 +313,10 @@
          contextName = "PhotoViewController.setImages():PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "friendPhotoID">
+               value = "photos">
             </PersistentString>
             <PersistentString
-               value = "photos">
+               value = "friendPhotoID">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

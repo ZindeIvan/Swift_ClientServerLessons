@@ -7,9 +7,9 @@
 //
 
 import UIKit
-
+//Класс стандартный экран с оповещением
 class BaseViewController : UIViewController {
-    
+    //Метод отображения оповещения
     func showAlert(title: String? = nil,
                    message: String? = nil,
                    handler: ((UIAlertAction) -> ())? = nil,

@@ -30,13 +30,14 @@ class GroupsTableViewController : UITableViewController {
     let networkService = NetworkService.shared
     //Свойство содержит ссылку на класс работы с Realm
     let realmService = RealmService.shared
-    
+    //Свойство - токен для наблюдения за изменениями данных в Realm
     private var groupsListSearchDataNotificationToken: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //Укажем текущий класс делегат для строки поиска
         groupsSearchBar.delegate = self
+        //Установим оповещения
         setNotifications()
         //Вызовем метод загрузки списка групп из сети
         loadGroupsFromNetwork()
@@ -81,7 +82,7 @@ class GroupsTableViewController : UITableViewController {
     @IBAction func addGroup (segue: UIStoryboardSegue){
        //Проверим идентификатор перехода
         if segue.identifier == "addGroup" {
-//            Приведем источник перехода к классу всех доступных групп
+            //Приведем источник перехода к классу всех доступных групп
             guard let allGroupsController = segue.source as? GroupsSearchTableViewController else {return}
             //Установим константу индекса выбранной строки
             if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
@@ -90,7 +91,6 @@ class GroupsTableViewController : UITableViewController {
                 //Проверим нет ли в списке групп пользователя выбранной группы
                 if !(groupsList?.contains(group) ?? false){
                     try? realmService?.saveInRealm(object: group)
-//                    tableView.reloadData()
                 }
 
             }
@@ -127,25 +127,28 @@ extension GroupsTableViewController {
                 DispatchQueue.main.async {
                     //Сохраним полученные данные в Realm
                     try? self?.realmService?.saveInRealm(objects: groups)
-//                    self?.tableView.reloadData()
                 }
             case let .failure(error):
-                print(error)
+                self?.showAlert(title: "Error", message: error.localizedDescription)
             }
         }
     }
 }
 
+//Методы работы с оповещениями Realm
 extension GroupsTableViewController {
-
+    
+    //Метод установки оповещений
     func setNotifications(){
+        //Установим наблюдателя для событий с данными в БД
         groupsListSearchDataNotificationToken = groupsListSearchData?.observe { [weak self] change in
             switch change {
+            //Инициализация
             case .initial:
                 #if DEBUG
                 print("Initialized")
                 #endif
-                
+            //Изменение
             case let .update(results, deletions: deletions, insertions: insertions, modifications: modifications):
                 #if DEBUG
                 print("""
@@ -157,9 +160,12 @@ extension GroupsTableViewController {
                 #endif
                 
                 self?.tableView.beginUpdates()
+                //Удаление элементов
                 self?.tableView.deleteRows(at: deletions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
-                    self?.tableView.insertRows(at: insertions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
-                    self?.tableView.reloadRows(at: modifications.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                //Добавление элементов
+                self?.tableView.insertRows(at: insertions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                //Обновление элементов
+                self?.tableView.reloadRows(at: modifications.map { IndexPath(item: $0, section: 0) }, with: .automatic)
                 self?.tableView.endUpdates()
 
             case let .error(error):
@@ -168,7 +174,7 @@ extension GroupsTableViewController {
         }
         
     }
-    
+    //Метод вызова оповещений об ошибках
     func showAlert(title: String? = nil,
                    message: String? = nil,
                    handler: ((UIAlertAction) -> ())? = nil,

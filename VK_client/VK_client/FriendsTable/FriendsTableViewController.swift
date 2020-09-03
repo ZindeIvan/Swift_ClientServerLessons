@@ -37,10 +37,17 @@ class FriendsViewController : BaseViewController{
 //        return friendsList?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText)
         return friendsList?.filter("firstName CONTAINS[cd] %@", searchText)
     }
-    var sortedUsers : [User] = []
+    //Массив содержащий отсортированных пользователей до изменения
+    var sortedUsers : [UserPlaceholder] = []
+    //Структура пользователя
+    struct UserPlaceholder {
+        var id : Int = 0
+        var firstName : String = ""
+        var lastName : String = ""
+    }
     
     //Словарь секций
-    var sections : [Character: [String]] = [:]
+    var sections : [Character: [UserPlaceholder]] = [:]
     //Массив заголовков секций
     var sectionsTitles : [Character] = []
     
@@ -52,7 +59,7 @@ class FriendsViewController : BaseViewController{
     
     //Свойство содержит ссылку на класс работы с Realm
     let realmService = RealmService.shared
-    
+    //Свойство - токен для наблюдения за изменениями данных в Realm
     private var filteredFriendsNotificationToken: NotificationToken?
     
     override func viewDidLoad() {
@@ -64,15 +71,10 @@ class FriendsViewController : BaseViewController{
         }
         //Настроим секции
         setupSections()
-        //Настроим элемент прокрутки
-        setupFriendsScroller()
+
         //Зарегистрируем Заголовок секций
         friendsTableView.register(UINib(nibName: "FriendsTableSectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "sectionHeader")
         setNotifications()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-//        friendsTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -87,12 +89,12 @@ class FriendsViewController : BaseViewController{
             //Если переход предназначен для открытия коллекции фото друга
             if let destination = segue.destination as? FriendsPhotoCollectionViewController {
                 //Зададим идентификатор друга для коллекции которого вызван переход
-                guard let username = sections[sectionsTitles[selectedIndexPath!.section]]?[selectedIndexPath!.row] else {
+                guard let friend = sections[sectionsTitles[selectedIndexPath!.section]]?[selectedIndexPath!.row] else {
                     fatalError()
                 }
                 //Получим индекс массива друзей по имени пользователя
                 let index = friendsListSearchData?.firstIndex { (user) -> Bool in
-                    if getFullName(user.firstName, user.lastName)  == username {
+                    if user.id == friend.id  {
                         return true
                     }
                     return false
@@ -106,21 +108,25 @@ class FriendsViewController : BaseViewController{
     func setupSections (){
         sections = [:]
         //Обойдем массив пользователей
-        for name in friendsListSearchData?.map({getFullName($0.firstName,$0.lastName)}) ?? [String]() {
+        guard let friendsArray = friendsListSearchData else {return}
+        for friend in friendsArray {
             //Возьмем первую букву имени пользователя
-            let firstLetter = name.first!
+            let firstLetter = friend.firstName.first!
             //Если в массиве секций уже есть секция с такой буквой
             //добавим в словарь имя пользователя
             if sections[firstLetter] != nil {
-                sections[firstLetter]?.append(name)
+                sections[firstLetter]?.append(UserPlaceholder(id: friend.id, firstName: friend.firstName, lastName: friend.lastName))
             }
                 //В противном случае добавим новый элемент словаря
             else {
-                sections[firstLetter] = [name]
+                sections[firstLetter] = [UserPlaceholder(id: friend.id, firstName: friend.firstName, lastName: friend.lastName)]
             }
         }
         //Заполним массив заголовков секций
         sectionsTitles = Array(sections.keys).sorted()
+        
+        setupSortedUsers()
+        setupFriendsScroller()
     }
     
     //Метод настройки элемента прокрутки
@@ -162,12 +168,12 @@ extension FriendsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableCell") as? FriendsTableCell else { fatalError() }
-        guard let username = sections[sectionsTitles[indexPath.section]]?[indexPath.row] else {
+        guard let friend = sections[sectionsTitles[indexPath.section]]?[indexPath.row] else {
             fatalError()
         }
         //Найдем индекс друга в списке друзей
         let index = friendsListSearchData?.firstIndex { (user) -> Bool in
-            if getFullName(user.firstName, user.lastName)  == username {
+            if user.id == friend.id {
                 return true
             }
             return false
@@ -252,11 +258,9 @@ extension FriendsViewController {
             case let .success(users):
                 DispatchQueue.main.async {
                     try? self?.realmService?.saveInRealm(objects: users)
-//                    self?.friendsTableView.reloadData()
-                    self?.sortedUsers = Array((self?.friendsList)!)
                 }
             case let .failure(error):
-                print(error)
+                self?.showAlert(title: "Error", message: error.localizedDescription)
             }
         }
         
@@ -264,16 +268,20 @@ extension FriendsViewController {
 
 }
 
+//Методы работы с оповещениями Realm
 extension FriendsViewController {
 
+    //Метод установки оповещений
     func setNotifications(){
+        //Установим наблюдателя для событий с данными в БД
         filteredFriendsNotificationToken = friendsListSearchData?.observe { [weak self] change in
             switch change {
+            //Инициализация
             case .initial:
                 #if DEBUG
                 print("Initialized")
                 #endif
-                
+            //Изменение
             case let .update(results, deletions: deletions, insertions: insertions, modifications: modifications):
                 #if DEBUG
                 print("""
@@ -283,19 +291,36 @@ extension FriendsViewController {
                     Modifications: \(modifications)
                     """)
                 #endif
-                
+                //Вычислим элементы для удаления
                 let deletionsIndexes = self?.getIndexPathsFromIndexes(indexes: deletions)
+                //Вычислим секции для удаления
+                let sectionsToDelete = self?.getSectionsToDelete(indexes: deletionsIndexes ?? [IndexPath]())
+                //Сохраним список секций до обновления
+                let oldSectionsTitles = self?.sectionsTitles
+                //Обновим секции
+                self?.setupSections()
+                //Вычислим индексы для вставки
                 let insertionsIndexes = self?.getIndexPathsFromIndexes(indexes: insertions)
-                let modifications = self?.getIndexPathsFromIndexes(indexes: modifications)
+                //Вычислим секции для вставки
+                let sectionsToInsert = self?.getSectionsToInsert(oldSectionsTitles: oldSectionsTitles ?? [Character]())
                 
                 self?.friendsTableView.beginUpdates()
-                self?.setupSections()
+                //Удаление
                 self?.friendsTableView.deleteRows(at: deletionsIndexes ?? [IndexPath](), with: .automatic)
+                self?.friendsTableView.deleteSections(sectionsToDelete ?? IndexSet(), with: .automatic)
+                
+                //Вставка
                 self?.friendsTableView.insertRows(at: insertionsIndexes ?? [IndexPath](), with: .automatic)
-                self?.friendsTableView.reloadRows(at: modifications ?? [IndexPath](), with: .automatic)
-
+                self?.friendsTableView.insertSections(sectionsToInsert ?? IndexSet(), with: .automatic)
                 self?.friendsTableView.endUpdates()
-
+                
+                //Вычислим индексы для обновления
+                let modifications = self?.getIndexPathsFromIndexes(indexes: modifications)
+                self?.friendsTableView.beginUpdates()
+                //Обновление
+                self?.friendsTableView.reloadRows(at: modifications ?? [IndexPath](), with: .automatic)
+                self?.friendsTableView.endUpdates()
+                
             case let .error(error):
                 self?.showAlert(title: "Error", message: error.localizedDescription)
             }
@@ -303,15 +328,60 @@ extension FriendsViewController {
         
     }
     
+    //Метод получения индексов для вставки
     func getIndexPathsFromIndexes(indexes: [Int]) -> [IndexPath]{
         var indexPaths : [IndexPath] = []
         for index in indexes {
             let friend = sortedUsers[index]
-            guard let sectionIndex = sectionsTitles.firstIndex(of: friend.firstName.first!) else {continue}
-            guard let rowIndex = sections[sectionsTitles[sectionIndex]]!.firstIndex(of: getFullName(friend.firstName, friend.lastName)) else {continue}
-            indexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
+            guard let firstLetter = friend.firstName.first else {continue}
+            guard let sectionIndex = sectionsTitles.firstIndex(of: firstLetter) else {continue}
+            if let rowIndex = sections[sectionsTitles[sectionIndex]]?.firstIndex(where: { (user) -> Bool in
+                if user.id == friend.id{
+                    return true
+                }
+                return false
+            }) {
+                indexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))}
+            else {continue}
+            
         }
         return indexPaths
+    }
+    
+    //Метод получения секций для удаления
+    func getSectionsToDelete(indexes: [IndexPath]) -> IndexSet{
+        let indexSetToDelete = NSMutableIndexSet()
+        var tempSections = sections
+        for index in indexes {
+            tempSections[sectionsTitles[index.section]]?.remove(at: index.row)
+        }
+        for section in tempSections {
+            if section.value.count == 0 {
+                indexSetToDelete.add(sectionsTitles.firstIndex(of: section.key)!)
+            }
+        }
+        return indexSetToDelete as IndexSet
+    }
+    
+    //Метод получения секция для вставки
+    func getSectionsToInsert(oldSectionsTitles : [Character]) -> IndexSet{
+        let indexSetToInsert = NSMutableIndexSet()
+        for title in sectionsTitles {
+            if oldSectionsTitles.firstIndex(of: title) == nil {
+                indexSetToInsert.add(sectionsTitles.firstIndex(of: title)!)
+            }
+        }
+        return indexSetToInsert as IndexSet
+    }
+    
+    //Метод установки пользователей до изменения
+    func setupSortedUsers(){
+        if let friendsArray = friendsListSearchData {
+            sortedUsers = friendsArray.map {
+                UserPlaceholder(id: $0.id, firstName: $0.firstName, lastName: $0.lastName)
+            }
+        }
+        
     }
 }
 
