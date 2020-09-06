@@ -30,6 +30,9 @@
 		B5476EE324B8CDBA00F7570C /* GroupsSearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5476EE224B8CDBA00F7570C /* GroupsSearchTableCell.swift */; };
 		B5476EE524B8D0D800F7570C /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5476EE424B8D0D800F7570C /* Group.swift */; };
 		B5483CBA24BB3EAF002B57B8 /* LikeControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */; };
+		B556DFAC2505005200263B2F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B556DFAB2505005200263B2F /* GoogleService-Info.plist */; };
+		B556DFAE25051E8200263B2F /* FirebaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B556DFAD25051E8200263B2F /* FirebaseConfig.swift */; };
+		B556DFB02505238D00263B2F /* FirebaseGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B556DFAF2505238D00263B2F /* FirebaseGroup.swift */; };
 		B57E2D6E24B62D7A006CD7F3 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */; };
 		B57E2D7124B62F9A006CD7F3 /* FriendsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57E2D7024B62F9A006CD7F3 /* FriendsTableCell.swift */; };
 		B57FD40824FFF17400B64DA5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57FD40724FFF17400B64DA5 /* BaseViewController.swift */; };
@@ -70,6 +73,9 @@
 		B5476EE224B8CDBA00F7570C /* GroupsSearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsSearchTableCell.swift; sourceTree = "<group>"; };
 		B5476EE424B8D0D800F7570C /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeControlView.swift; sourceTree = "<group>"; };
+		B556DFAB2505005200263B2F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B556DFAD25051E8200263B2F /* FirebaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConfig.swift; sourceTree = "<group>"; };
+		B556DFAF2505238D00263B2F /* FirebaseGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseGroup.swift; sourceTree = "<group>"; };
 		B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
 		B57E2D7024B62F9A006CD7F3 /* FriendsTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableCell.swift; sourceTree = "<group>"; };
 		B57FD40724FFF17400B64DA5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -135,6 +141,7 @@
 				B5DC8C3A24DEFDF800A00667 /* Session.swift */,
 				B541A56724E45B2F00E79AB8 /* NetworkService.swift */,
 				B5D9D00D24EE4C1B009AC718 /* RealmService.swift */,
+				B556DFAD25051E8200263B2F /* FirebaseConfig.swift */,
 			);
 			path = NetworkServices;
 			sourceTree = "<group>";
@@ -144,21 +151,22 @@
 			children = (
 				B546E4AA24B762E10003FEA3 /* User.swift */,
 				B5476EE424B8D0D800F7570C /* Group.swift */,
-				B51BBD9624CBBA8100FE2822 /* News.swift */,
+				B556DFAF2505238D00263B2F /* FirebaseGroup.swift */,
 				B5C1C7BD24EA7AAC00559853 /* Photo.swift */,
+				B51BBD9624CBBA8100FE2822 /* News.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		B546E4AC24B76E510003FEA3 /* FriendsPhotoCollection */ = {
+		B546E4AC24B76E510003FEA3 /* FriendsPhotosControllers */ = {
 			isa = PBXGroup;
 			children = (
-				B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */,
 				B546E4AD24B76EAA0003FEA3 /* FriendsPhotoCollectionViewController.swift */,
+				B5483CB924BB3EAF002B57B8 /* LikeControlView.swift */,
 				B546E4AF24B76EC10003FEA3 /* FriendsPhotoCell.swift */,
 				B547630524D4000F00DD9BC5 /* PhotoViewController.swift */,
 			);
-			path = FriendsPhotoCollection;
+			path = FriendsPhotosControllers;
 			sourceTree = "<group>";
 		};
 		B5476EDA24B8CD0A00F7570C /* GroupsTable */ = {
@@ -179,12 +187,43 @@
 			path = GroupsSearchTable;
 			sourceTree = "<group>";
 		};
+		B556DFA82504FDB700263B2F /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				B541A56224E4505A00E79AB8 /* VKLoginViewController.swift */,
+				B590EDD524AF67EA00179DEA /* LoginViewController.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		B556DFA92504FDF600263B2F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B57FD40724FFF17400B64DA5 /* BaseViewController.swift */,
+				B556DFAB2505005200263B2F /* GoogleService-Info.plist */,
+				B590EDDF24AF67EB00179DEA /* Info.plist */,
+				B590EDDA24AF67EB00179DEA /* Assets.xcassets */,
+				B590EDD124AF67EA00179DEA /* AppDelegate.swift */,
+				B590EDD324AF67EA00179DEA /* SceneDelegate.swift */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B556DFAA2504FE3200263B2F /* StroryBoards */ = {
+			isa = PBXGroup;
+			children = (
+				B590EDD724AF67EA00179DEA /* Main.storyboard */,
+				B590EDDC24AF67EB00179DEA /* LaunchScreen.storyboard */,
+			);
+			path = StroryBoards;
+			sourceTree = "<group>";
+		};
 		B57E2D6F24B62F5D006CD7F3 /* FriendsTable */ = {
 			isa = PBXGroup;
 			children = (
+				B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */,
 				B53A1B2B24D6F8DF00A0245F /* Animator.swift */,
 				B504562E24BA1D0100AEED5F /* FriendsIconView.swift */,
-				B57E2D6D24B62D7A006CD7F3 /* FriendsTableViewController.swift */,
 				B57E2D7024B62F9A006CD7F3 /* FriendsTableCell.swift */,
 				B52F443E24C7182A00BB04D4 /* FriendsScrollerControlView.swift */,
 				B53A1B2D24D6FD3C00A0245F /* FriendsNavigationController.swift */,
@@ -215,22 +254,16 @@
 		B590EDD024AF67EA00179DEA /* VK_client */ = {
 			isa = PBXGroup;
 			children = (
+				B556DFAA2504FE3200263B2F /* StroryBoards */,
+				B546E4A924B762AC0003FEA3 /* Model */,
 				B541A56624E459A300E79AB8 /* NetworkServices */,
 				B5476EDF24B8CD7800F7570C /* GroupsSearchTable */,
 				B5476EDA24B8CD0A00F7570C /* GroupsTable */,
-				B546E4A924B762AC0003FEA3 /* Model */,
 				B57E2D6F24B62F5D006CD7F3 /* FriendsTable */,
-				B546E4AC24B76E510003FEA3 /* FriendsPhotoCollection */,
+				B546E4AC24B76E510003FEA3 /* FriendsPhotosControllers */,
 				B51BBD9324CBB5D100FE2822 /* NewsTable */,
-				B590EDD524AF67EA00179DEA /* LoginViewController.swift */,
-				B590EDD724AF67EA00179DEA /* Main.storyboard */,
-				B541A56224E4505A00E79AB8 /* VKLoginViewController.swift */,
-				B590EDDC24AF67EB00179DEA /* LaunchScreen.storyboard */,
-				B590EDD324AF67EA00179DEA /* SceneDelegate.swift */,
-				B590EDD124AF67EA00179DEA /* AppDelegate.swift */,
-				B590EDDA24AF67EB00179DEA /* Assets.xcassets */,
-				B590EDDF24AF67EB00179DEA /* Info.plist */,
-				B57FD40724FFF17400B64DA5 /* BaseViewController.swift */,
+				B556DFA82504FDB700263B2F /* Login */,
+				B556DFA92504FDF600263B2F /* Supporting Files */,
 			);
 			path = VK_client;
 			sourceTree = "<group>";
@@ -300,6 +333,7 @@
 				B51BBD9924CBBD6300FE2822 /* NewsCell.xib in Resources */,
 				B526A99324C9F90E005A0965 /* FriendsTableSectionHeaderView.xib in Resources */,
 				B590EDD924AF67EA00179DEA /* Main.storyboard in Resources */,
+				B556DFAC2505005200263B2F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +390,7 @@
 				B590EDD624AF67EA00179DEA /* LoginViewController.swift in Sources */,
 				B57E2D7124B62F9A006CD7F3 /* FriendsTableCell.swift in Sources */,
 				B5C1C7BE24EA7AAC00559853 /* Photo.swift in Sources */,
+				B556DFB02505238D00263B2F /* FirebaseGroup.swift in Sources */,
 				B5476EDE24B8CD6C00F7570C /* GroupsTableCell.swift in Sources */,
 				B5476EDC24B8CD3E00F7570C /* GroupsTableViewController.swift in Sources */,
 				B53A1B2E24D6FD3C00A0245F /* FriendsNavigationController.swift in Sources */,
@@ -370,6 +405,7 @@
 				B57E2D6E24B62D7A006CD7F3 /* FriendsTableViewController.swift in Sources */,
 				B526A99524C9F93E005A0965 /* FriendsTableSectionHeaderView.swift in Sources */,
 				B51BBD9B24CBBD8E00FE2822 /* NewsCell.swift in Sources */,
+				B556DFAE25051E8200263B2F /* FirebaseConfig.swift in Sources */,
 				B5483CBA24BB3EAF002B57B8 /* LikeControlView.swift in Sources */,
 				B590EDD424AF67EA00179DEA /* SceneDelegate.swift in Sources */,
 				B546E4B024B76EC10003FEA3 /* FriendsPhotoCell.swift in Sources */,
@@ -527,7 +563,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 68K772KRF2;
-				INFOPLIST_FILE = VK_client/Info.plist;
+				INFOPLIST_FILE = "VK_client/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -546,7 +582,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 68K772KRF2;
-				INFOPLIST_FILE = VK_client/Info.plist;
+				INFOPLIST_FILE = "VK_client/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -34,8 +34,7 @@ class FriendsViewController : BaseViewController{
     private var friendsListSearchData : Results<User>? {
         guard let searchText = friendsSearchBar.text else {return friendsList}
         if searchText == "" {return friendsList}
-//        return friendsList?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText)
-        return friendsList?.filter("firstName CONTAINS[cd] %@", searchText)
+        return friendsList?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText, searchText)
     }
     //Массив содержащий отсортированных пользователей до изменения
     var sortedUsers : [UserPlaceholder] = []
@@ -80,6 +79,10 @@ class FriendsViewController : BaseViewController{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadFriendsFromNetwork()
+    }
+    
+    deinit {
+        filteredFriendsNotificationToken?.invalidate()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

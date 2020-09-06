@@ -36,6 +36,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "closure #1 in GroupsTableViewController.setFirebaseObservers():GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self?.addedGroups">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in FriendsViewController.setNotifications():FriendsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
@@ -70,10 +78,10 @@
          contextName = "PhotoViewController.setImageToView(imageID:imageView:):PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos">
+               value = "photos![friendPhotoID!]">
             </PersistentString>
             <PersistentString
-               value = "photos![friendPhotoID!]">
+               value = "photos">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -134,16 +142,16 @@
                value = "groupsListSearchData">
             </PersistentString>
             <PersistentString
-               value = "indexPath.item">
+               value = "groupsListSearchData?.count">
             </PersistentString>
             <PersistentString
                value = "groupsListSearchData?[indexPath.item]">
             </PersistentString>
             <PersistentString
-               value = "cell.groupNameLabel.text">
+               value = "indexPath.item">
             </PersistentString>
             <PersistentString
-               value = "groupsListSearchData?.count">
+               value = "cell.groupNameLabel.text">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -196,13 +204,21 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "closure #1 in VKLoginViewController.webView(_:decidePolicyFor:decisionHandler:):VKLoginViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "error.localizedDescription">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "FriendsPhotoCollectionViewController.collectionView(_:cellForItemAt:):FriendsPhotoCollectionViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos">
+               value = "photos?[indexPath.row]">
             </PersistentString>
             <PersistentString
-               value = "photos?[indexPath.row]">
+               value = "photos">
             </PersistentString>
             <PersistentString
                value = "photos?[indexPath.row].photoSizeX">
@@ -299,6 +315,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "closure #1 in GroupsTableViewController.setNotifications():GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = " $0">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in GroupsTableViewController.loadGroupsFromNetwork(completion:):GroupsTableViewController.swift">
          <PersistentStrings>
             <PersistentString
@@ -313,10 +337,24 @@
          contextName = "PhotoViewController.setImages():PhotoViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "photos">
+               value = "friendPhotoID">
             </PersistentString>
             <PersistentString
-               value = "friendPhotoID">
+               value = "photos">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GroupsTableViewController.tableView(_:commit:forRowAt:):GroupsTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "group.id">
+            </PersistentString>
+            <PersistentString
+               value = "addedGroupId">
+            </PersistentString>
+            <PersistentString
+               value = "groupsCollection.document">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
