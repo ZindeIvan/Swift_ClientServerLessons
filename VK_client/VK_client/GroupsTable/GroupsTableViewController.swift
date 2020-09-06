@@ -9,6 +9,8 @@
 import UIKit
 import SDWebImage
 import RealmSwift
+import FirebaseDatabase
+import FirebaseFirestore
 
 //Класс для отображения списка групп пользователя
 class GroupsTableViewController : UITableViewController {
@@ -32,6 +34,14 @@ class GroupsTableViewController : UITableViewController {
     let realmService = RealmService.shared
     //Свойство - токен для наблюдения за изменениями данных в Realm
     private var groupsListSearchDataNotificationToken: NotificationToken?
+    //Свойство - ссылка на объект группы для FirebaseDatabase
+    var groupsRef = Database.database().reference(withPath: "Groups")
+    //Свойство - ссылка на объект группы для FirebaseFirestore
+    var groupsCollection = Firestore.firestore().collection("Groups")
+    //Наблюдатель для FirebaseFirestore
+    var listener: ListenerRegistration?
+    //Свойство - массив добавленных групп
+    private var addedGroups = [FirebaseGroup]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +49,7 @@ class GroupsTableViewController : UITableViewController {
         groupsSearchBar.delegate = self
         //Установим оповещения
         setNotifications()
+        setFirebaseObservers()
         //Вызовем метод загрузки списка групп из сети
         loadGroupsFromNetwork()
     }
@@ -48,8 +59,16 @@ class GroupsTableViewController : UITableViewController {
         //Уберем текст в строке поиска
         groupsSearchBar.text = ""
         groupsSearchBar.endEditing(true)
-        //Перезагрузим данные таблицы
-        tableView.reloadData()
+    }
+    
+    deinit {
+        groupsListSearchDataNotificationToken?.invalidate()
+        switch Config.databaseType {
+        case .database:
+            groupsRef.removeAllObservers()
+        case .firestore:
+            listener?.remove()
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -71,9 +90,44 @@ class GroupsTableViewController : UITableViewController {
         //Если действие - удаление
         if editingStyle == .delete {
             //Удалим группу из Realm
-            guard let groups = groupsListSearchData?[indexPath.item] else { return }
-            if (try? realmService?.delete(object: groups)) != nil {
-                tableView.deleteRows(at: [indexPath], with: .right)
+            guard let group = groupsListSearchData?[indexPath.item] else { return }
+            
+            //Определим тип конфигурации для Firebase
+            switch Config.databaseType {
+            case .database:
+                //Найдем индекс в массиве добавленных групп
+                let index = addedGroups.firstIndex { (addedGroup) -> Bool in
+                    return addedGroup.id == group.id
+                }
+                //Если не нашли индекс в массиве добавленных групп удаляем из Realm
+                guard let addedGroupIndex = index else {
+                    try? realmService?.delete(object: group)
+                    return
+                }
+                //Удаляем группу в Firebase
+                let addedGroup = addedGroups[addedGroupIndex]
+                addedGroup.ref?.removeValue { [weak self] error, _ in
+                    if let error = error {
+                        self?.showAlert(title: "Error", message: error.localizedDescription)
+                    }
+                }
+                
+            case .firestore:
+                //Найдем индекс в массиве добавленных групп
+                let addedGroup = addedGroups.first(where: { (addedGroup) -> Bool in
+                     return addedGroup.id == group.id
+                })
+                //Если не нашли индекс в массиве добавленных групп удаляем из Realm
+                guard let addedGroupId = addedGroup?.id else {
+                    try? realmService?.delete(object: group)
+                    return
+                }
+                //Удаляем группу в Firebase
+                groupsCollection.document("\(addedGroupId)").delete { [weak self] error in
+                    if let error = error {
+                        self?.showAlert(title: "Error", message: error.localizedDescription)
+                    }
+                }
             }
         }
     }
@@ -91,6 +145,15 @@ class GroupsTableViewController : UITableViewController {
                 //Проверим нет ли в списке групп пользователя выбранной группы
                 if !(groupsList?.contains(group) ?? false){
                     try? realmService?.saveInRealm(object: group)
+                    //Создадим группу Firebase из группы
+                    let firebaseGroup = FirebaseGroup(from: group)
+                    //Определим тип конфигурации для Firebase и добавляем группу
+                    switch Config.databaseType {
+                    case .database:
+                        groupsRef.child("\(firebaseGroup.id)").setValue(firebaseGroup.toAnyObject())
+                    case .firestore:
+                        groupsCollection.document("\(firebaseGroup.id)").setData(firebaseGroup.toAnyObject())
+                    }
                 }
 
             }
@@ -161,7 +224,7 @@ extension GroupsTableViewController {
                 
                 self?.tableView.beginUpdates()
                 //Удаление элементов
-                self?.tableView.deleteRows(at: deletions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
+                self?.tableView.deleteRows(at: deletions.map { IndexPath(item:  $0, section: 0) }, with: .automatic)
                 //Добавление элементов
                 self?.tableView.insertRows(at: insertions.map { IndexPath(item: $0, section: 0) }, with: .automatic)
                 //Обновление элементов
@@ -186,3 +249,75 @@ extension GroupsTableViewController {
     }
 }
 
+extension GroupsTableViewController {
+    
+    //Метод установки наблюдателей для изменений в Firebase
+    func setFirebaseObservers(){
+        //Определим тип конфигурации для Firebase
+        switch Config.databaseType {
+        case .database:
+            groupsRef.observe(.value) { [weak self] snapshot in
+                //Сохраним предыдущий список групп до изменения
+                let oldAddedGroups = self?.addedGroups
+                //Удалим все группы в списке
+                self?.addedGroups.removeAll()
+                //Если пустая коллекция проверим на удаление последнего элемента
+                guard !snapshot.children.allObjects.isEmpty else {
+                    self?.findeAndRemoveGroupFromRealm(oldAddedGroups ?? [FirebaseGroup]())
+                    return
+                }
+                //Обойдем коллекцию и добавим элементы в массив
+                for child in snapshot.children {
+                    guard let child = child as? DataSnapshot,
+                        let group = FirebaseGroup(snapshot: child) else { continue }
+                    self?.addedGroups.append(group)
+                    
+                }
+                //Проверим и дуалим группы из Realm
+                self?.findeAndRemoveGroupFromRealm(oldAddedGroups ?? [FirebaseGroup]())
+            }
+
+        case .firestore:
+            listener = groupsCollection.addSnapshotListener { [weak self] snapshot, error in
+                //Сохраним предыдущий список групп до изменения
+                let oldAddedGroups = self?.addedGroups
+                //Удалим все группы в списке
+                self?.addedGroups.removeAll()
+                guard let snapshot = snapshot else { return }
+                //Если пустая коллекция проверим на удаление последнего элемента
+                guard !snapshot.documents.isEmpty else {
+                    self?.findeAndRemoveGroupFromRealm(oldAddedGroups ?? [FirebaseGroup]())
+                    return
+                }
+                //Обойдем коллекцию и добавим элементы в массив
+                for document in snapshot.documents {
+                    if let group = FirebaseGroup(dict: document.data()) {
+                        self?.addedGroups.append(group)
+                    }
+                }
+                //Проверим и дуалим группы из Realm
+                self?.findeAndRemoveGroupFromRealm(oldAddedGroups ?? [FirebaseGroup]())
+            }
+            
+        }
+    }
+    
+    //Метод поиска и удаления группы из Realm
+    func findeAndRemoveGroupFromRealm(_ oldAddedGroups : [FirebaseGroup]) {
+        
+        for oldGroup in oldAddedGroups{
+            let index = addedGroups.firstIndex { (addedGroup) -> Bool in
+                return addedGroup.id == oldGroup.id
+            }
+            if index == nil {
+                let group = groupsListSearchData?.first(where: { (group) -> Bool in
+                    oldGroup.id == group.id
+                })
+                guard let groupToDelete = group else {return}
+                try? realmService?.delete(object: groupToDelete)
+                
+            }
+        }
+        
+    }
+}

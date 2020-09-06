@@ -14,8 +14,8 @@
             filePath = "VK_client/FriendsTable/FriendsTableViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
             landmarkName = "getIndexPathsFromIndexes(indexes:)"
             landmarkType = "7">
          </BreakpointContent>
