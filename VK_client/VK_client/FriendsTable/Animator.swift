@@ -13,7 +13,7 @@ class PushAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     //Метод длительности анимации
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 2.0
+        return 1.0
     }
     
     //Метод анимации перехода
@@ -27,10 +27,9 @@ class PushAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         //Зададим границы экрана назначения
         destination.view.frame = source.view.frame
         //Спрячем экран назначения
-        let coordinatesCorrection = (destination.view.frame.height - destination.view.frame.width)/2
-        let rotation = CGAffineTransform(rotationAngle: -.pi/2)
-        let transform = CGAffineTransform(translationX: coordinatesCorrection+source.view.frame.height, y: -coordinatesCorrection)
-        destination.view.transform = rotation.concatenating(transform)
+        let scale = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        let transform = CGAffineTransform(translationX: source.view.frame.width, y: 0)
+        destination.view.transform = scale.concatenating(transform)
         
         //Зададим анимацию перехода
         UIView.animateKeyframes(
@@ -41,11 +40,10 @@ class PushAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                     
-                    let transform = CGAffineTransform(translationX: -2*source.view.frame.width, y: -source.view.frame.width)
+                    let transform = CGAffineTransform(translationX: -source.view.frame.width, y: 0)
+                    let scale =  CGAffineTransform(scaleX: 0.5, y: 0.5)
                     
-                    let rotation =  CGAffineTransform(rotationAngle: .pi/2)
-                    
-                    source.view.transform = rotation.concatenating(transform)
+                    source.view.transform = scale.concatenating(transform)
                 }
                 
                 UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
@@ -69,7 +67,7 @@ class PopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     //Метод длительности анимации
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 2.0
+        return 1.0
     }
     
     //Метод анимации перехода
@@ -84,10 +82,9 @@ class PopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         //Зададим границы экрана назначения
         destination.view.frame = source.view.frame
         //Спрячем экран назначения
-        let coordinatesCorrection = (destination.view.frame.height - destination.view.frame.width)/2
-        let rotation = CGAffineTransform(rotationAngle: .pi/2)
-        let transform = CGAffineTransform(translationX: -coordinatesCorrection-source.view.frame.height, y: -coordinatesCorrection)
-        destination.view.transform = rotation.concatenating(transform)
+        let scale = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        let transform = CGAffineTransform(translationX: -source.view.frame.width, y: 0)
+        destination.view.transform = scale.concatenating(transform)
         //Зададим анимацию перехода
         UIView.animateKeyframes(
             withDuration: self.transitionDuration(using: transitionContext),
@@ -97,11 +94,10 @@ class PopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                     
-                    let transform = CGAffineTransform(translationX: 2*source.view.frame.width, y: -source.view.frame.width)
+                    let transform = CGAffineTransform(translationX: source.view.frame.width, y: 0)
+                    let scale =  CGAffineTransform(scaleX: 0.5, y: 0.5)
                     
-                    let rotation =  CGAffineTransform(rotationAngle: -.pi/2)
-                    
-                    source.view.transform = rotation.concatenating(transform)
+                    source.view.transform = scale.concatenating(transform)
                 }
                 
                 UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {

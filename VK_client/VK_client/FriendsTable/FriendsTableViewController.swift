@@ -24,18 +24,12 @@ class FriendsViewController : BaseViewController{
     //Элемент поиска
     @IBOutlet weak var friendsSearchBar : UISearchBar!
     
-    //Свойство содержащее запрос пользователей
-    private var friendsList : Results<User>? {
-        let users: Results<User>? = realmService?.loadFromRealm()
-        return users?.sorted(byKeyPath: "id", ascending: true)
-    }
-    
     //Свойство содержащее запрос пользователей с фильтром
     private var friendsListSearchData : Results<User>? {
-        guard let searchText = friendsSearchBar.text else {return friendsList}
-        if searchText == "" {return friendsList}
-//        return friendsList?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText)
-        return friendsList?.filter("firstName CONTAINS[cd] %@", searchText)
+        let users: Results<User>? = realmService?.loadFromRealm().sorted(byKeyPath: "id", ascending: true)
+        guard let searchText = friendsSearchBar.text else {return users}
+        if searchText == "" {return users}
+        return users?.filter("(firstName CONTAINS[cd] %@) || (lastName CONTAINS[cd] %@)", searchText, searchText)
     }
     //Массив содержащий отсортированных пользователей до изменения
     var sortedUsers : [UserPlaceholder] = []
@@ -65,7 +59,7 @@ class FriendsViewController : BaseViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let friends = friendsList, friends.isEmpty {
+        if let friends = friendsListSearchData, friends.isEmpty {
             //Вызовем загрузку списка друзей из сети
             loadFriendsFromNetwork()
         }

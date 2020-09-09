@@ -48,8 +48,6 @@ class GroupsTableViewController : UITableViewController {
         //Уберем текст в строке поиска
         groupsSearchBar.text = ""
         groupsSearchBar.endEditing(true)
-        //Перезагрузим данные таблицы
-        tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -72,9 +70,7 @@ class GroupsTableViewController : UITableViewController {
         if editingStyle == .delete {
             //Удалим группу из Realm
             guard let groups = groupsListSearchData?[indexPath.item] else { return }
-            if (try? realmService?.delete(object: groups)) != nil {
-                tableView.deleteRows(at: [indexPath], with: .right)
-            }
+            try? realmService?.delete(object: groups) 
         }
     }
     
